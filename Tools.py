@@ -1,3 +1,4 @@
+from datetime import date
 import numpy as np
 import Validations
 import csv
@@ -9,18 +10,19 @@ confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regi
 deaths_cases_path = 'Raw data\\time_series_covid19_deaths_global_iso3_regions.csv'
 recovered_cases_path = 'Raw data\\time_series_covid19_recovered_global_iso3_regions.csv'
 
+# Variables globales
+COUNTRY_COLUMN = 1
+
 def get_info_by_country_name(country):
     # Devuelve un arreglo con toda la información de un pais
     # country: Es el nombre de un pais dado por el usuario.
     if Validations.file_exists(confirmed_cases_path) and Validations.check_empty_country_name(country):
-        country_row = 1
-
         with open(confirmed_cases_path, 'r') as confirmed_cases:
             reader = csv.reader(confirmed_cases)
             country_raw_info = []
 
             for row in reader:
-                if row[country_row] == country:
+                if row[COUNTRY_COLUMN] == country:
                     country_raw_info.append(row)
             
             return country_raw_info
@@ -36,6 +38,7 @@ def get_column_names():
             return next(reader)
     else:
         print('El archvo no existe en la ruta espesificada.')
+
 def get_clear_vector_info(country_raw_info):
     # Devuleve un arreglo solo con la información correspondoente a las
     # a fechas de un pais antes seleccionado.
@@ -43,6 +46,7 @@ def get_clear_vector_info(country_raw_info):
     column_names = get_column_names()
     fisrt_index, last_index = get_range_dates(column_names)
     dates_cases = []
+    dates = []
     
     for vector in country_raw_info:
         dates_cases.append(vector[ fisrt_index:last_index ])
@@ -51,9 +55,9 @@ def get_clear_vector_info(country_raw_info):
 
     if len(country_raw_info) > 1: # Si el arreglo tiene mas de una fila
         dates_cases = add_matrix_to_vector(dates_cases)
-        return dates_cases
-    else:
-        return dates_cases
+
+    dates = convert_to_date_type( column_names[fisrt_index:last_index] ) 
+    return dates_cases, dates
 
 def get_range_dates(array_column_names):
     # Verifica si el nombre de la columna es una fecha.
@@ -83,3 +87,39 @@ def add_matrix_to_vector(int_dates_cases):
     # int_dates_cases: Es una matriz de enteros con los casos por fecha.
     summed_vector = [ sum(element) for element in zip(*int_dates_cases) ]
     return summed_vector
+
+def show_all_countrys():
+    # Devulve una lista de todos los paises disponibles para consultar
+    if Validations.file_exists(confirmed_cases_path): # Si el archivo existe en la ruta
+        with open(confirmed_cases_path, 'r') as confirmed_cases:
+            reader = csv.reader(confirmed_cases)
+            country_names = []
+
+            for vector in reader:
+                country_names.append( vector[COUNTRY_COLUMN] )
+
+            country_names.remove('Country/Region')
+            country_names.remove('#country+name')
+            country_names = list( dict.fromkeys(country_names) )
+
+            for country in country_names:
+                print(country)
+    else:
+        print('El archvo no existe en la ruta espesificada.')
+
+def process_country_name(country_name):
+    print(country_name.split(' '))
+
+def convert_to_date_type(dates_array):
+    date_type_array = []
+
+    for dates in dates_array:
+        dates = dates.split('/')
+        year = '20' + dates[2]
+        month = dates[0]
+        day = dates[1]
+        current_date = date( int(year), int(month), int(day) )
+        date_type_array.append(current_date)
+
+    return date_type_array
+
