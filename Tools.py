@@ -1,5 +1,4 @@
 from datetime import date
-import numpy as np
 import Validations
 import csv
 import re
@@ -56,7 +55,11 @@ def get_clear_vector_info(country_raw_info):
     if len(country_raw_info) > 1: # Si el arreglo tiene mas de una fila
         dates_cases = add_matrix_to_vector(dates_cases)
 
-    dates = convert_to_date_type( column_names[fisrt_index:last_index] ) 
+    dates = convert_to_date_type( column_names[fisrt_index:last_index] )
+
+    if len(dates_cases) == 0:
+        dates_cases = dates_cases[0]
+
     return dates_cases, dates
 
 def get_range_dates(array_column_names):
@@ -108,9 +111,14 @@ def show_all_countrys():
         print('El archvo no existe en la ruta espesificada.')
 
 def process_country_name(country_name):
+    # --- EN DESAROLLO --- #
+    # Devuelve el nombre procesado de un pais para encontrarlo en el dataset
+    # country_name: Es el nomnre de un pais dado por el usuairo 
     print(country_name.split(' '))
 
 def convert_to_date_type(dates_array):
+    # Devuelve un arreglo de fechas de tipo date con el formato yyyy-mm-dd.
+    # dates_array: es un arreglo de fechas de tipo string en formato mm/dd/yyyy
     date_type_array = []
 
     for dates in dates_array:
