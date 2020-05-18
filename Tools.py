@@ -57,7 +57,7 @@ def get_clear_vector_info(country_raw_info):
 
     dates = convert_to_date_type( column_names[fisrt_index:last_index] )
 
-    if len(dates_cases) == 0:
+    if len(dates_cases) == 1:
         dates_cases = dates_cases[0]
 
     return dates_cases, dates
