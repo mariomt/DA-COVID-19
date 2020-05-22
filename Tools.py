@@ -6,61 +6,112 @@ import re
 
 # Rutas de los datasets
 confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'
-deaths_cases_path = 'Raw data\\time_series_covid19_deaths_global_iso3_regions.csv'
+deaths_cases_path    = 'Raw data\\time_series_covid19_deaths_global_iso3_regions.csv'
 recovered_cases_path = 'Raw data\\time_series_covid19_recovered_global_iso3_regions.csv'
 
 # Variables globales
 COUNTRY_COLUMN = 1
+FILES_PATH = [confirmed_cases_path, deaths_cases_path, recovered_cases_path]
 
 def get_info_by_country_name(country):
-    # Devuelve un arreglo con toda la información de un pais
-    # country: Es el nombre de un pais dado por el usuario.
-    if Validations.file_exists(confirmed_cases_path) and Validations.check_empty_country_name(country):
-        with open(confirmed_cases_path, 'r') as confirmed_cases:
+    # Devuelve 3 arreglos (casos confirmados, recuperados y decesos) de tipo string con la 
+    # información completa de un pais dado.
+    # country: Es el nombre de un pais dado por el usuario (string).
+    raw_confirmed_cases = []
+    raw_recovered_cases = [] 
+    raw_deaths_cases = []
+
+    if Validations.file_exists(FILES_PATH):
+        with open(confirmed_cases_path, 'r') as confirmed_cases: # extrayendo información de casos confirmados
             reader = csv.reader(confirmed_cases)
-            country_raw_info = []
+            confirmed_raw_info = []
 
             for row in reader:
                 if row[COUNTRY_COLUMN] == country:
-                    country_raw_info.append(row)
+                    confirmed_raw_info.append(row)
             
-            return country_raw_info
+            raw_confirmed_cases = confirmed_raw_info
+
+        with open(recovered_cases_path, 'r') as recovered_cases: # extrayendo información de casos de recuperados
+            reader = csv.reader(recovered_cases)
+            recovered_raw_info = []
+
+            for row in reader:
+                if row[COUNTRY_COLUMN] == country:
+                    recovered_raw_info.append(row)
+
+            raw_recovered_cases = recovered_raw_info
+
+        with open(deaths_cases_path, 'r') as deaths_cases: # extrayendo información de casos decesos
+            reader = csv.reader(deaths_cases)
+            deaths_raw_info = []
+
+            for row in reader:
+                if row[COUNTRY_COLUMN] == country:
+                    deaths_raw_info.append(row)
+
+            raw_deaths_cases = deaths_raw_info
+
+        return raw_confirmed_cases, raw_recovered_cases, raw_deaths_cases
+
     else:
-        print('El archvo no existe en la ruta espesificada.')
+        print('La ruta de uno de los archivos no existe o es incorrecta.')
 
 def get_column_names():
     # Obtiene el primer renglon del dataset
-    if Validations.file_exists(confirmed_cases_path): # Si el archivo existe
+    if Validations.file_exists([confirmed_cases_path]): # Si el archivo existe
         with open(confirmed_cases_path, 'r') as confirmed_cases:
             reader = csv.reader(confirmed_cases)
-
             return next(reader)
     else:
         print('El archvo no existe en la ruta espesificada.')
 
-def get_clear_vector_info(country_raw_info):
-    # Devuleve un arreglo solo con la información correspondoente a las
-    # a fechas de un pais antes seleccionado.
-    # country_raw_info: Es un arreglo con toda la información de un pais.
-    column_names = get_column_names()
+def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
+    # Devuleve 3 arreglos de enteros (casos confirmados, recuperados, decesos) con la información correspondoente
+    # a las fechas de un pais antes seleccionado.
+    # raw_confirmed: Es un arreglo de strings con toda la información los casos confirmados.
+    # raw_recovered:  Es un arreglo de strings con toda la información los casos recuperados.
+    # raw_deaths: Es un arreglo de strings con toda la información los decesos.
+    column_names            = get_column_names()
     fisrt_index, last_index = get_range_dates(column_names)
-    dates_cases = []
-    dates = []
-    
-    for vector in country_raw_info:
-        dates_cases.append(vector[ fisrt_index:last_index ])
+    confirmed_cases         = []
+    recovered_cases         = []
+    deaths_cases            = []
+    dates                   = []
 
-    dates_cases = convert_to_int(dates_cases)
+    # Aislando las columnas correspondientes a las fechas
+    for vector in raw_confirmed:
+        confirmed_cases.append(vector[ fisrt_index:last_index ])
 
-    if len(country_raw_info) > 1: # Si el arreglo tiene mas de una fila
-        dates_cases = add_matrix_to_vector(dates_cases)
+    for vector in raw_recovered:
+        recovered_cases.append(vector[ fisrt_index:last_index ])
 
-    dates = convert_to_date_type( column_names[fisrt_index:last_index] )
+    for vector in raw_deaths:
+        deaths_cases.append(vector[ fisrt_index:last_index ])
 
-    if len(dates_cases) == 1:
-        dates_cases = dates_cases[0]
+    # Convirtiendo los arreglos de tipo string a int
+    confirmed_cases = convert_to_int(confirmed_cases)
+    recovered_cases = convert_to_int(recovered_cases)
+    deaths_cases    = convert_to_int(deaths_cases)
 
-    return dates_cases, dates
+    if len(raw_confirmed) > 1: # Si el arreglo tiene mas de una fila
+        # Sumando todoas las filas del arreglo
+        confirmed_cases = add_matrix_to_vector(confirmed_cases)
+        recovered_cases = add_matrix_to_vector(recovered_cases)
+        deaths_cases    = add_matrix_to_vector(deaths_cases)
+
+    # Convirtiendo el arreglo de fehcas de tipo strig a date
+    dates = convert_to_date_type(column_names[ fisrt_index:last_index ])
+
+    if len(confirmed_cases) == 1: 
+        # Por procedimiento de otros metodos hay ocaciones en las que los arreglos de enteros
+        # estan en un lista de arreglos o lista de listas. Aqui se valida si hay una lista 
+        # dentro de otra, de ser asi se iguala a la lista que se encuentra dentro. 
+        confirmed_cases = confirmed_cases[0]
+        recovered_cases = recovered_cases[0]
+        deaths_cases    = deaths_cases[0]
+
+    return confirmed_cases, recovered_cases, deaths_cases, dates
 
 def get_range_dates(array_column_names):
     # Verifica si el nombre de la columna es una fecha.
@@ -81,7 +132,7 @@ def get_range_dates(array_column_names):
 
 def convert_to_int(dates_cases):
     # Tranforma una matriz de numeros de tipo string en una matriz de integers.
-    # dates_cases: es un matriz de con numeros de tipo string.
+    # dates_cases: es un vector de con numeros de tipo string.
     int_dates_cases = [ [int(element) for element in vector] for vector in dates_cases ]
     return int_dates_cases
 
