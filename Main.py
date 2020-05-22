@@ -9,7 +9,10 @@ country_name = input('Ingrese el nombre del pais que desea consultar:')
 if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
     country_name = country_name.capitalize()
 
-
 raw_confirmed, raw_recovered, raw_deaths = Tools.get_info_by_country_name(country_name)
 confirmed_cases, recovered_cases, deaths_cases, dates = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
+
+active_cases = confirmed_cases[ len(confirmed_cases)-1 ] - recovered_cases[ len(recovered_cases)-1 ]
+print(str(active_cases) + ' casos activos en ' + country_name)
+
 plot.show_plot_dates(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
