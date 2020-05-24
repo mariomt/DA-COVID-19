@@ -111,6 +111,11 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
         recovered_cases = recovered_cases[0]
         deaths_cases    = deaths_cases[0]
 
+        # confirmed_cases = remove_zeros(confirmed_cases)
+        # recovered_cases = remove_zeros(recovered_cases)
+        # deaths_cases    = remove_zeros(deaths_cases)     
+        # dates           = remove_zeros(dates)
+
     return confirmed_cases, recovered_cases, deaths_cases, dates
 
 def get_range_dates(array_column_names):
@@ -144,7 +149,7 @@ def add_matrix_to_vector(int_dates_cases):
 
 def show_all_countrys():
     # Devulve una lista de todos los paises disponibles para consultar
-    if Validations.file_exists(confirmed_cases_path): # Si el archivo existe en la ruta
+    if Validations.file_exists([confirmed_cases_path]): # Si el archivo existe en la ruta
         with open(confirmed_cases_path, 'r') as confirmed_cases:
             reader = csv.reader(confirmed_cases)
             country_names = []
@@ -181,4 +186,41 @@ def convert_to_date_type(dates_array):
         date_type_array.append(current_date)
 
     return date_type_array
+
+def indexes_to_remove_zeros(vector):
+    # Devuleve las posiciones de inicio y final de la información de un vector
+    # que no es igual a 0.
+    # vector: Es un arreglo de enteros  
+    first_index = -1
+    last_index = len(vector)
+
+    for element in vector:
+        if element == 0:
+            first_index += 1
+
+    return first_index, last_index
+
+def tres():
+    print("tres")
+
+def cuatro():
+    print('cuatro')
+
+def cinco():
+    print('cinco')
+
+def seis():
+    print('seis')
+
+def siete():
+    print('siete')
+
+def ocho():
+    print('ocho')
+
+def nueve():
+    print('nueve')
+
+def diez():
+    print('diez')
 

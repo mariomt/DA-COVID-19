@@ -11,11 +11,13 @@ def show_plot_dates(dates_array, confirmed_cases, recovered_cases, deaths_cases,
     # confirmed_cases: Es un arreglo de enteros que contiene la información de los casos confirmados
     # recovered_cases: Es un arreglo de enteros que contiene la información de los casos recuperados
     # deaths_cases: Es un arreglo de enteros que contiene la información de los decesos
+    active_cases = get_active_cases(confirmed_cases, recovered_cases)
 
     # Graficación de información
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
     plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Recuperados')
     plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Muertes')
+    plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
 
     # Estructura
     plot.legend(loc=2)
@@ -27,3 +29,12 @@ def show_plot_dates(dates_array, confirmed_cases, recovered_cases, deaths_cases,
     plot.ylabel('Numero de casos')
     plot.tight_layout()
     plot.show()
+
+def get_active_cases(confirmed_cases, recovered_cases):
+    array_size = len(confirmed_cases)
+    active_cases = []
+    
+    for n in range(array_size):
+        active_cases.append(confirmed_cases[n] - recovered_cases[n])
+    
+    return active_cases
