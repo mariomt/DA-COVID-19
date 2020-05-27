@@ -11,8 +11,8 @@ def get_all_info_by_country():
     if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
         country_name = country_name.capitalize()
 
-    raw_confirmed, raw_recovered, raw_deaths = Tools.get_info_by_country_name(country_name)
-    confirmed_cases, recovered_cases, deaths_cases, dates = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
+    raw_confirmed, raw_recovered, raw_deaths       = Tools.get_info_by_country_name(country_name)
+    confirmed_cases, recovered_cases, deaths_cases = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
 
     first_index, last_index = Tools.indexes_to_remove_zeros(confirmed_cases)
     confirmed_cases = confirmed_cases[ first_index:last_index ]
@@ -30,7 +30,6 @@ def get_confirmed_cases_by_country():
         country_name = country_name.capitalize()    
 
     confirmed_cases = Tools.get_confirmed_cases(country_name)
-    dates = Tools.get_dates_vector()
     plot.show_country_confirmed_cases(dates, confirmed_cases, country_name)
 
 def get_recovered_cases_by_country():
@@ -43,7 +42,7 @@ def get_recovered_cases_by_country():
     recovered_cases = Tools.get_recovered_cases(country_name)
     plot.show_country_recovered_cases(dates, recovered_cases, country_name)
     
-def get_deaths_cases_by_country_name():
+def get_deaths_cases_by_country():
     country_name = input('Ingrese el nombre del pais que desea consultar:')
 
     # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
@@ -53,6 +52,19 @@ def get_deaths_cases_by_country_name():
     deaths_cases = Tools.get_deaths_cases(country_name)
     plot.show_country_deaths_cases(dates, deaths_cases, country_name)
 
+def get_active_cases_by_country():
+    country_name = input('Ingrese el nombre del pais que desea consultar:')
+
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+        country_name = country_name.capitalize()    
+
+    confirmed_cases, recovered_cases, deaths_cases = Tools.get_info_by_country_name(country_name)
+    confirmed_cases                                = Tools.clear_vector(confirmed_cases)
+    recovered_cases                                = Tools.clear_vector(recovered_cases)
+    deaths_cases                                   = Tools.clear_vector(deaths_cases)
+
+    plot.show_country_active_cases(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
 
 print(""" Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
 como casos confirmados, recuperaciones, decesos y casos activos en 
@@ -89,12 +101,13 @@ options = {
     '2': get_all_info_by_country,
     '3': get_confirmed_cases_by_country,
     '4': get_recovered_cases_by_country,
-    '5': get_deaths_cases_by_country_name,
-    '6': 'Tools.seis',
+    '5': get_deaths_cases_by_country,
+    '6': get_active_cases_by_country,
     '7': 'Tools.siete',
-    '8': Tools.ocho,
-    '9': Tools.nueve,
-    '10': Tools.diez
+    '8': 'Tools.ocho',
+    '9': 'Tools.nueve',
+    '10': 'Tools.diez',
+    '11': 'Exit'
 }
 
 option_selected = input('Elige una opción: ')

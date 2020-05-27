@@ -11,7 +11,7 @@ recovered_cases_path = 'Raw data\\time_series_covid19_recovered_global_iso3_regi
 
 # Variables globales
 COUNTRY_COLUMN = 1
-FILES_PATH = [confirmed_cases_path, deaths_cases_path, recovered_cases_path]
+FILES_PATH     = [confirmed_cases_path, deaths_cases_path, recovered_cases_path]
 
 def get_info_by_country_name(country):
     # Devuelve 3 arreglos (casos confirmados, recuperados y decesos) de tipo string con la 
@@ -19,11 +19,11 @@ def get_info_by_country_name(country):
     # country: Es el nombre de un pais dado por el usuario (string).
     raw_confirmed_cases = []
     raw_recovered_cases = [] 
-    raw_deaths_cases = []
+    raw_deaths_cases    = []
 
     if Validations.file_exists(FILES_PATH):
         with open(confirmed_cases_path, 'r') as confirmed_cases: # extrayendo información de casos confirmados
-            reader = csv.reader(confirmed_cases)
+            reader             = csv.reader(confirmed_cases)
             confirmed_raw_info = []
 
             for row in reader:
@@ -33,7 +33,7 @@ def get_info_by_country_name(country):
             raw_confirmed_cases = confirmed_raw_info
 
         with open(recovered_cases_path, 'r') as recovered_cases: # extrayendo información de casos de recuperados
-            reader = csv.reader(recovered_cases)
+            reader             = csv.reader(recovered_cases)
             recovered_raw_info = []
 
             for row in reader:
@@ -43,7 +43,7 @@ def get_info_by_country_name(country):
             raw_recovered_cases = recovered_raw_info
 
         with open(deaths_cases_path, 'r') as deaths_cases: # extrayendo información de casos decesos
-            reader = csv.reader(deaths_cases)
+            reader          = csv.reader(deaths_cases)
             deaths_raw_info = []
 
             for row in reader:
@@ -77,7 +77,6 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
     confirmed_cases         = []
     recovered_cases         = []
     deaths_cases            = []
-    dates                   = []
 
     # Aislando las columnas correspondientes a las fechas
     for vector in raw_confirmed:
@@ -100,9 +99,6 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
         recovered_cases = add_matrix_to_vector(recovered_cases)
         deaths_cases    = add_matrix_to_vector(deaths_cases)
 
-    # Convirtiendo el arreglo de fehcas de tipo strig a date
-    dates = convert_to_date_type(column_names[ fisrt_index:last_index ])
-
     if len(confirmed_cases) == 1: 
         # Por procedimiento de otros metodos hay ocaciones en las que los arreglos de enteros
         # estan en un lista de arreglos o lista de listas. Aqui se valida si hay una lista 
@@ -111,14 +107,14 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
         recovered_cases = recovered_cases[0]
         deaths_cases    = deaths_cases[0]
 
-    return confirmed_cases, recovered_cases, deaths_cases, dates
+    return confirmed_cases, recovered_cases, deaths_cases
 
 def get_range_dates(array_column_names):
     # Verifica si el nombre de la columna es una fecha.
     # array_column_names: Es un arreglo con los nombres de las clumnas 
     # (el primer renglon).
     date_format_regex = re.compile(r'(\d{1,2}\/\d{1,2}\/\d{2,4})')
-    column_index = []
+    column_index      = []
 
     for column_name in array_column_names:
         # Si el nombre de la columna coinside con la expresión regular
@@ -127,7 +123,7 @@ def get_range_dates(array_column_names):
             
 
     first_index = column_index[0]
-    last_index = 1 + column_index[ len(column_index)-1 ]
+    last_index  = 1 + column_index[ len(column_index)-1 ]
 
     return first_index, last_index
 
@@ -147,7 +143,7 @@ def show_all_countrys():
     # Devulve una lista de todos los paises disponibles para consultar
     if Validations.file_exists([confirmed_cases_path]): # Si el archivo existe en la ruta
         with open(confirmed_cases_path, 'r') as confirmed_cases:
-            reader = csv.reader(confirmed_cases)
+            reader        = csv.reader(confirmed_cases)
             country_names = []
 
             for vector in reader:
@@ -174,10 +170,10 @@ def convert_to_date_type(dates_array):
     date_type_array = []
 
     for dates in dates_array:
-        dates = dates.split('/')
-        year = '20' + dates[2]
-        month = dates[0]
-        day = dates[1]
+        dates        = dates.split('/')
+        year         = '20' + dates[2]
+        month        = dates[0]
+        day          = dates[1]
         current_date = date( int(year), int(month), int(day) )
         date_type_array.append(current_date)
 
@@ -188,7 +184,7 @@ def indexes_to_remove_zeros(vector):
     # que no es igual a 0.
     # vector: Es un arreglo de enteros  
     first_index = -1
-    last_index = len(vector)
+    last_index  = len(vector)
 
     for element in vector:
         if element == 0:
@@ -212,12 +208,10 @@ def get_confirmed_cases(country_name):
     confirmed_cases = clear_vector(confirmed_cases)
     return confirmed_cases
 
-
-
 def clear_vector(raw_array):
-    column_names = get_column_names()
+    column_names            = get_column_names()
     first_index, last_index = get_range_dates(column_names)
-    clear_vector = []
+    clear_vector            = []
 
     for vector in raw_array:
         clear_vector.append(vector[ first_index:last_index ])
@@ -233,10 +227,10 @@ def clear_vector(raw_array):
     return clear_vector
 
 def get_dates_vector():
-    column_names = get_column_names()
+    column_names            = get_column_names()
     first_index, last_index = get_range_dates(column_names)
-    dates_vector = column_names[ first_index:last_index ]
-    dates_vector = convert_to_date_type(dates_vector)
+    dates_vector            = column_names[ first_index:last_index ]
+    dates_vector            = convert_to_date_type(dates_vector)
 
     return dates_vector
 
@@ -272,8 +266,11 @@ def get_deaths_cases(country_name):
     deaths_cases = clear_vector(deaths_cases)
     return deaths_cases
 
-def ocho():
-    print('ocho')
+def get_active_cases(country_name):
+    confirmed_cases, recovered_cases, deaths_cases = get_info_by_country_name(country_name)
+    confirmed_cases                                = clear_vector(confirmed_cases)
+    recovered_cases                                = clear_vector(recovered_cases)
+    deaths_cases                                   = clear_vector(deaths_cases)
 
 def nueve():
     print('nueve')
