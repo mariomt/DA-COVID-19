@@ -111,27 +111,23 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths):
         recovered_cases = recovered_cases[0]
         deaths_cases    = deaths_cases[0]
 
-        # confirmed_cases = remove_zeros(confirmed_cases)
-        # recovered_cases = remove_zeros(recovered_cases)
-        # deaths_cases    = remove_zeros(deaths_cases)     
-        # dates           = remove_zeros(dates)
-
     return confirmed_cases, recovered_cases, deaths_cases, dates
 
 def get_range_dates(array_column_names):
     # Verifica si el nombre de la columna es una fecha.
     # array_column_names: Es un arreglo con los nombres de las clumnas 
     # (el primer renglon).
-    date_format_regex = re.compile(r'(\d{1,2}\/\d{1,2}\/\d{2})')
+    date_format_regex = re.compile(r'(\d{1,2}\/\d{1,2}\/\d{2,4})')
     column_index = []
 
     for column_name in array_column_names:
         # Si el nombre de la columna coinside con la expresión regular
         if date_format_regex.match(column_name): 
             column_index.append( array_column_names.index(column_name) )
-    
+            
+
     first_index = column_index[0]
-    last_index = column_index[ len(column_index)-1 ]
+    last_index = 1 + column_index[ len(column_index)-1 ]
 
     return first_index, last_index
 
@@ -200,20 +196,81 @@ def indexes_to_remove_zeros(vector):
 
     return first_index, last_index
 
-def tres():
-    print("tres")
+def get_confirmed_cases(country_name):
+    confirmed_cases = []
 
-def cuatro():
-    print('cuatro')
+    if Validations.file_exists([confirmed_cases_path]):
+        with open(confirmed_cases_path, 'r') as raw_confirmed_cases:
+            reader = csv.reader(raw_confirmed_cases)
 
-def cinco():
-    print('cinco')
+            for row in reader:
+                if row[COUNTRY_COLUMN] == country_name:
+                    confirmed_cases.append(row)
+    else:
+        print('El archvo no existe en la ruta espesificada.')
 
-def seis():
-    print('seis')
+    confirmed_cases = clear_vector(confirmed_cases)
+    return confirmed_cases
 
-def siete():
-    print('siete')
+
+
+def clear_vector(raw_array):
+    column_names = get_column_names()
+    first_index, last_index = get_range_dates(column_names)
+    clear_vector = []
+
+    for vector in raw_array:
+        clear_vector.append(vector[ first_index:last_index ])
+
+    clear_vector = convert_to_int(clear_vector)
+
+    if len(raw_array) > 1:
+        clear_vector = add_matrix_to_vector(clear_vector)
+
+    if len(clear_vector) == 1:
+        clear_vector = clear_vector[0]
+
+    return clear_vector
+
+def get_dates_vector():
+    column_names = get_column_names()
+    first_index, last_index = get_range_dates(column_names)
+    dates_vector = column_names[ first_index:last_index ]
+    dates_vector = convert_to_date_type(dates_vector)
+
+    return dates_vector
+
+def get_recovered_cases(country_name):
+    recovered_cases = []
+
+    if Validations.file_exists([recovered_cases_path]):
+        with open(recovered_cases_path, 'r') as raw_recovered_cases:
+            reader = csv.reader(raw_recovered_cases)
+
+            for row in reader:
+                if row[COUNTRY_COLUMN] == country_name:
+                    recovered_cases.append(row)
+    else:
+        print('El archvo no existe en la ruta espesificada.')
+
+    recovered_cases = clear_vector(recovered_cases)
+    return recovered_cases
+
+def get_deaths_cases(country_name):
+    deaths_cases = []
+
+    if Validations.file_exists([deaths_cases_path]):
+        with open(deaths_cases_path, 'r') as raw_deaths_cases:
+            reader = csv.reader(raw_deaths_cases)
+
+            for row in reader:
+                if row[COUNTRY_COLUMN] == country_name:
+                    deaths_cases.append(row)
+    else:
+        print('El archvo no existe en la ruta espesificada.')
+
+    deaths_cases = clear_vector(deaths_cases)
+    return deaths_cases
 
 def ocho():
     print('ocho')

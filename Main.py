@@ -1,6 +1,8 @@
 import Tools
 import Validations
-import data_visaulisation as plot
+import Data_visaulisation as plot
+
+dates = Tools.get_dates_vector()
 
 def get_all_info_by_country():
     country_name = input('Ingrese el nombre del pais que desea consultar:')
@@ -18,7 +20,39 @@ def get_all_info_by_country():
     deaths_cases    = deaths_cases[ first_index:last_index ]
     dates           = dates[ first_index:last_index ]
 
-    plot.show_plot_dates(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+    plot.show_all_country_info(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+
+def get_confirmed_cases_by_country():
+    country_name = input('Ingrese el nombre del pais que desea consultar:')
+
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+        country_name = country_name.capitalize()    
+
+    confirmed_cases = Tools.get_confirmed_cases(country_name)
+    dates = Tools.get_dates_vector()
+    plot.show_country_confirmed_cases(dates, confirmed_cases, country_name)
+
+def get_recovered_cases_by_country():
+    country_name = input('Ingrese el nombre del pais que desea consultar:')
+
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+        country_name = country_name.capitalize()    
+
+    recovered_cases = Tools.get_recovered_cases(country_name)
+    plot.show_country_recovered_cases(dates, recovered_cases, country_name)
+    
+def get_deaths_cases_by_country_name():
+    country_name = input('Ingrese el nombre del pais que desea consultar:')
+
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+        country_name = country_name.capitalize()    
+
+    deaths_cases = Tools.get_deaths_cases(country_name)
+    plot.show_country_deaths_cases(dates, deaths_cases, country_name)
+
 
 print(""" Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
 como casos confirmados, recuperaciones, decesos y casos activos en 
@@ -44,7 +78,7 @@ o en el sitio web: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-
 4 - Casos recuperados de un país
 5 - Decesos de un país
 6 - Casos activos de un país
-7 - Comparar casos conformados entre 2 paises
+7 - Comparar casos confirmados entre 2 paises
 8 - Comparar casos recuperados entre 2 paises 
 9 - Comparar decesos entre 2 paises 
 10 - Comparar casos activos entre 2 paisescle
@@ -53,11 +87,11 @@ o en el sitio web: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-
 options = {
     '1': Tools.show_all_countrys,
     '2': get_all_info_by_country,
-    '3': Tools.tres,
-    '4': Tools.cuatro,
-    '5': Tools.cinco,
-    '6': Tools.seis,
-    '7': Tools.siete,
+    '3': get_confirmed_cases_by_country,
+    '4': get_recovered_cases_by_country,
+    '5': get_deaths_cases_by_country_name,
+    '6': 'Tools.seis',
+    '7': 'Tools.siete',
     '8': Tools.ocho,
     '9': Tools.nueve,
     '10': Tools.diez
