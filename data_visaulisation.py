@@ -1,6 +1,7 @@
 from matplotlib import pyplot as plot
 from matplotlib import dates as plot_dates
 from datetime import date
+import Tools
 
 plot.style.use('seaborn') # Estilo de grafica
 
@@ -35,7 +36,7 @@ def get_active_cases(confirmed_cases, recovered_cases, deaths_cases):
     active_cases = []
     
     for n in range(array_size):
-        active_cases.append((confirmed_cases[n] + deaths_cases[n]) - recovered_cases[n])
+        active_cases.append(confirmed_cases[n] - (recovered_cases[n] + deaths_cases[n]))
     
     return active_cases
 
@@ -99,3 +100,76 @@ def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, dea
     plot.ylabel('Numero de casos activos')
     plot.tight_layout()
     plot.show()
+
+def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_second_country, first_name, second_name):
+    plot.plot(dates_array, confirmed_first_country, linestyle='solid', color='blue', label=first_name)
+    plot.plot(dates_array, confirmed_second_country, linestyle='solid', color='green', label=second_name)
+
+    # Estructura
+    plot.legend(loc=2)
+    plot.gcf().autofmt_xdate()
+    date_format = plot_dates.DateFormatter('%b, %d, %Y')
+    plot.gca().xaxis.set_major_formatter(date_format)
+    plot.title('Comportamiento de casos confirmados de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
+                str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('Tiempo')
+    plot.ylabel('Numero de casos confirmados')
+    plot.tight_layout()
+    plot.show()
+
+def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_second_country, first_name, second_name):
+    plot.plot(dates_array, recovered_first_country, linestyle='solid', color='blue', label=first_name)
+    plot.plot(dates_array, recovered_second_country, linestyle='solid', color='green', label=second_name)
+
+    # Estructura
+    plot.legend(loc=2)
+    plot.gcf().autofmt_xdate()
+    date_format = plot_dates.DateFormatter('%b, %d, %Y')
+    plot.gca().xaxis.set_major_formatter(date_format)
+    plot.title('Comportamiento de casos recuperados de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
+                str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('Tiempo')
+    plot.ylabel('Numero de casos recuperados')
+    plot.tight_layout()
+    plot.show()
+
+def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_country, first_name, second_name):
+    plot.plot(dates_array, deaths_first_country, linestyle='solid', color='blue', label=first_name)
+    plot.plot(dates_array, deaths_second_country, linestyle='solid', color='green', label=second_name)
+
+    # Estructura
+    plot.legend(loc=2)
+    plot.gcf().autofmt_xdate()
+    date_format = plot_dates.DateFormatter('%b, %d, %Y')
+    plot.gca().xaxis.set_major_formatter(date_format)
+    plot.title('Comportamiento de decesos por COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
+                str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('Tiempo')
+    plot.ylabel('Numero de decesos')
+    plot.tight_layout()
+    plot.show()
+
+def show_active_vs_countrys(dates_array, first_name, second_name):
+    first_confirmed, first_recovered, first_deaths    = Tools.get_info_by_country_name(first_name)
+    first_confirmed, first_recovered, first_deaths    = Tools.get_clear_vector_info(first_confirmed, first_recovered, first_deaths)
+    second_confirmed, second_recovered, second_deaths = Tools.get_info_by_country_name(second_name)
+    second_confirmed, second_recovered, second_deaths = Tools.get_clear_vector_info(second_confirmed, second_recovered, second_deaths)
+
+    active_first_country  = get_active_cases(first_confirmed, first_recovered, first_deaths)
+    active_second_country = get_active_cases(second_confirmed, second_recovered, second_deaths)
+
+    plot.plot(dates_array, active_first_country, linestyle='solid', color='blue', label=first_name)
+    plot.plot(dates_array, active_second_country, linestyle='solid', color='green', label=second_name)
+
+    # Estructura
+    plot.legend(loc=2)
+    plot.gcf().autofmt_xdate()
+    date_format = plot_dates.DateFormatter('%b, %d, %Y')
+    plot.gca().xaxis.set_major_formatter(date_format)
+    plot.title('Comportamiento de casos activos de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
+                str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('Tiempo')
+    plot.ylabel('Numero de casos activos')
+    plot.tight_layout()
+    plot.show()
+

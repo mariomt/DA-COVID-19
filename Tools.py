@@ -3,13 +3,12 @@ import Validations
 import csv
 import re
 
-
+# Variables globales
 # Rutas de los datasets
 confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'
 deaths_cases_path    = 'Raw data\\time_series_covid19_deaths_global_iso3_regions.csv'
 recovered_cases_path = 'Raw data\\time_series_covid19_recovered_global_iso3_regions.csv'
 
-# Variables globales
 COUNTRY_COLUMN = 1
 FILES_PATH     = [confirmed_cases_path, deaths_cases_path, recovered_cases_path]
 
@@ -115,6 +114,7 @@ def get_range_dates(array_column_names):
     # (el primer renglon).
     date_format_regex = re.compile(r'(\d{1,2}\/\d{1,2}\/\d{2,4})')
     column_index      = []
+    last_index        = 1
 
     for column_name in array_column_names:
         # Si el nombre de la columna coinside con la expresión regular
@@ -123,7 +123,7 @@ def get_range_dates(array_column_names):
             
 
     first_index = column_index[0]
-    last_index  = 1 + column_index[ len(column_index)-1 ]
+    last_index  += column_index[ len(column_index)-1 ]
 
     return first_index, last_index
 
@@ -265,15 +265,6 @@ def get_deaths_cases(country_name):
 
     deaths_cases = clear_vector(deaths_cases)
     return deaths_cases
-
-def get_active_cases(country_name):
-    confirmed_cases, recovered_cases, deaths_cases = get_info_by_country_name(country_name)
-    confirmed_cases                                = clear_vector(confirmed_cases)
-    recovered_cases                                = clear_vector(recovered_cases)
-    deaths_cases                                   = clear_vector(deaths_cases)
-
-def nueve():
-    print('nueve')
 
 def diez():
     print('diez')

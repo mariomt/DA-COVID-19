@@ -14,11 +14,11 @@ def get_all_info_by_country():
     raw_confirmed, raw_recovered, raw_deaths       = Tools.get_info_by_country_name(country_name)
     confirmed_cases, recovered_cases, deaths_cases = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
 
-    first_index, last_index = Tools.indexes_to_remove_zeros(confirmed_cases)
-    confirmed_cases = confirmed_cases[ first_index:last_index ]
-    recovered_cases = recovered_cases[ first_index:last_index ]
-    deaths_cases    = deaths_cases[ first_index:last_index ]
-    dates           = dates[ first_index:last_index ]
+    # first_index, last_index = Tools.indexes_to_remove_zeros(confirmed_cases)
+    # confirmed_cases         = confirmed_cases[ first_index:last_index ]
+    # recovered_cases         = recovered_cases[ first_index:last_index ]
+    # deaths_cases            = deaths_cases[ first_index:last_index ]
+    # relevant_dates          = dates[ first_index:last_index ]
 
     plot.show_all_country_info(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
 
@@ -66,6 +66,63 @@ def get_active_cases_by_country():
 
     plot.show_country_active_cases(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
 
+def get_vs_confirmed_cases():
+    first_country = input('Ingrese el primer país: ')
+    second_country = input('Ingrese el segundo país: ')
+
+    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
+        first_country = first_country.capitalize()
+
+    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
+        second_country = second_country.capitalize()
+    
+    confirmed_first_country = Tools.get_confirmed_cases(first_country)
+    confirmed_second_country = Tools.get_confirmed_cases(second_country)
+
+    plot.show_confirmed_vs_countrys(dates, confirmed_first_country, confirmed_second_country, first_country, second_country)
+
+def get_vs_recovered_cases():
+    first_country = input('Ingrese el primer país: ')
+    second_country = input('Ingrese el segundo país: ')
+
+    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
+        first_country = first_country.capitalize()
+
+    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
+        second_country = second_country.capitalize()
+
+    recovered_first_country  = Tools.get_recovered_cases(first_country)
+    recovered_second_country = Tools.get_confirmed_cases(second_country)
+
+    plot.show_recovered_vs_countrys(dates, recovered_first_country, recovered_second_country, first_country, second_country)
+
+def get_vs_deaths_cases():
+    first_country = input('Ingrese el primer país: ')
+    second_country = input('Ingrese el segundo país: ')
+
+    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
+        first_country = first_country.capitalize()
+
+    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
+        second_country = second_country.capitalize()
+
+    deaths_first_country   = Tools.get_deaths_cases(first_country)
+    deaths_seacond_country = Tools.get_deaths_cases(second_country)
+
+    plot.show_deaths_vs_countrys(dates, deaths_first_country, deaths_seacond_country, first_country, second_country)
+
+def get_vs_active_cases():
+    first_country = input('Ingrese el primer país: ')
+    second_country = input('Ingrese el segundo país: ')
+
+    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
+        first_country = first_country.capitalize()
+
+    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
+        second_country = second_country.capitalize()
+
+    plot.show_active_vs_countrys(dates, first_country, second_country)
+
 print(""" Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
 como casos confirmados, recuperaciones, decesos y casos activos en 
 en el país que gustes consultar. O si lo prefieres, Contrastar la
@@ -93,7 +150,7 @@ o en el sitio web: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-
 7 - Comparar casos confirmados entre 2 paises
 8 - Comparar casos recuperados entre 2 paises 
 9 - Comparar decesos entre 2 paises 
-10 - Comparar casos activos entre 2 paisescle
+10 - Comparar casos activos entre 2 paises
 11 - Salir """)
 
 options = {
@@ -103,10 +160,10 @@ options = {
     '4': get_recovered_cases_by_country,
     '5': get_deaths_cases_by_country,
     '6': get_active_cases_by_country,
-    '7': 'Tools.siete',
-    '8': 'Tools.ocho',
-    '9': 'Tools.nueve',
-    '10': 'Tools.diez',
+    '7': get_vs_confirmed_cases,
+    '8': get_vs_recovered_cases,
+    '9': get_vs_deaths_cases,
+    '10': get_vs_active_cases,
     '11': 'Exit'
 }
 
