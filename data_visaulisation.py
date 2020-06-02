@@ -3,6 +3,10 @@ from matplotlib import dates as plot_dates
 from datetime import date
 import Tools
 
+# Variables globales
+scale       = 1.1
+date_format = plot_dates.DateFormatter('%b, %d, %Y')
+
 plot.style.use('seaborn') # Estilo de grafica
 
 def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_cases, country_name):
@@ -28,9 +32,9 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
     active_rate    = (actives / confirmed)*100
 
     # Redondenando porsentajes
-    recovered_rate = round(recovered_rate, 4)
-    death_rate     = round(death_rate, 4)
-    active_rate    = round(active_rate, 4)
+    recovered_rate = round(recovered_rate, 2)
+    death_rate     = round(death_rate, 2)
+    active_rate    = round(active_rate, 2)
 
     # Imprimiendo información de grafica
     print('\n --- --- ' + country_name + ' --- ---' +
@@ -46,12 +50,12 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
     plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Recuperados')
     plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Muertes')
-    plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
-
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
+    f  = zoom_factory(ax, base_scale = scale)
+    
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento general de COVID-19 en ' + country_name + ' hasta el ' + str(dates_array[ len(dates_array)-1 ]))
     plot.xlabel('Tiempo')
@@ -87,12 +91,12 @@ def show_country_confirmed_cases(dates_array, confirmed_cases, country_name):
           '\n Casos confirmados acumulados: {:,}'.format(confirmed))
 
     # Graficación de información
-    plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Casos confirmados')
+    ax = plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Casos confirmados')
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos confirmados de COVID-19 en ' + country_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -122,12 +126,12 @@ def show_country_recovered_cases(dates_array, recovered_cases, country_name):
           '\n Casos recuperados acumulados: {:,}'.format(recovered) +
           '\n Indice de mortalidad: ------> '    + str(recovered_rate) + '%')
 
-    plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Casos recuperados')
+    ax = plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Casos recuperados')
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos recuperados de COVID-19 en ' + country_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -150,19 +154,19 @@ def show_country_deaths_cases(dates_array, deaths_cases, country_name):
 
     # Pocentaje de mortalidad
     death_rate   = (deaths / confirmed)*100
-    death_rate   = round(death_rate, 4)
+    death_rate   = round(death_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---' +
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Decesos acumulados: --------> {:,}'.format(deaths) +
           '\n Indice de mortalidad: ------> '    + str(death_rate) + '%')
 
-    plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
+    ax = plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de los decesos por deCOVID-19 en ' + country_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -194,12 +198,12 @@ def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, dea
           '\n Casos activos actualmente: {:,}'   .format(actives) +
           '\n Indice de casos activos: '         + str(active_rate) + '%')
 
-    plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Casos activos')
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Casos activos')
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos activos de COVID-19 en ' + country_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -227,12 +231,12 @@ def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_s
           '\n Casos confirmados acumulados: {:,}'.format(confirmed_1) + ' |-VS-|-> {:,}'.format(confirmed_2))
 
     plot.plot(dates_array, confirmed_first_country, linestyle='solid', color='blue', label=first_name)
-    plot.plot(dates_array, confirmed_second_country, linestyle='solid', color='green', label=second_name)
+    ax = plot.plot(dates_array, confirmed_second_country, linestyle='solid', color='green', label=second_name)
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos confirmados de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -276,12 +280,12 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
           '\n Indice de recuperación: ----> ' + str(recovered_rate_1) + '%'    + ' |-VS-|-> ' + str(recovered_rate_2) + '%')
 
     plot.plot(dates_array, recovered_first_country, linestyle='solid', color='blue', label=first_name)
-    plot.plot(dates_array, recovered_second_country, linestyle='solid', color='green', label=second_name)
+    ax = plot.plot(dates_array, recovered_second_country, linestyle='solid', color='green', label=second_name)
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos recuperados de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -307,7 +311,7 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
 
     # Porcentaje de mortalidad del primer país.
     death_rate_1 = (deaths_1 / confirmed_1)*100
-    death_rate_1 = round(death_rate_1, 4)
+    death_rate_1 = round(death_rate_1, 2)
 
     # Segundo país
     # Información de la ultima fehca del primer país.
@@ -317,7 +321,7 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
 
     # Porcentaje de mortalidad del segundo país.
     death_rate_2 = (deaths_2 / confirmed_2)*100
-    death_rate_2 = round(death_rate_2, 4)
+    death_rate_2 = round(death_rate_2, 2)
 
     print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |' + '--- --- ' + second_name + ' --- ---' +
           '\n Casos confirmados acumulados: {:,}'.format(confirmed_1)  + ' |-VS-|-> {:,}'.format(confirmed_2) +
@@ -325,12 +329,12 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
           '\n Indice de mortalidad: ------> '+ str(death_rate_1) + '%'    + ' |-VS-|-> ' + str(death_rate_2) + '%')
 
     plot.plot(dates_array, deaths_first_country, linestyle='solid', color='blue', label=first_name)
-    plot.plot(dates_array, deaths_second_country, linestyle='solid', color='green', label=second_name)
+    ax = plot.plot(dates_array, deaths_second_country, linestyle='solid', color='green', label=second_name)
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de decesos por COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -380,12 +384,12 @@ def show_active_vs_countrys(dates_array, first_name, second_name):
           '\n Indice de casos activos: ---> '+ str(active_rate_1) + '%'    + ' |-VS-|-> ' + str(active_rate_2) + '%')
 
     plot.plot(dates_array, active_first_country, linestyle='solid', color='blue', label=first_name)
-    plot.plot(dates_array, active_second_country, linestyle='solid', color='green', label=second_name)
+    ax = plot.plot(dates_array, active_second_country, linestyle='solid', color='green', label=second_name)
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento de casos activos de COVID-19 ' + first_name + ' VS. ' + second_name + ' hasta el ' + 
                 str(dates_array[ len(dates_array)-1 ]))
@@ -414,9 +418,9 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     recovered_rate = (num_recovered_cases / num_confirmed_cases)*100
     active_rate    = (num_active_cases / num_confirmed_cases)*100
     # total          = death_rate + recovered_rate + active_rate
-    death_rate     = round(death_rate, 4)
-    recovered_rate = round(recovered_rate, 4)
-    active_rate    = round(active_rate, 4)
+    death_rate     = round(death_rate, 2)
+    recovered_rate = round(recovered_rate, 2)
+    active_rate    = round(active_rate, 2)
 
     print('\n --- --- INFORMACIÓN GLOBAL --- ---' +
           '\n Casos confirmados acumulados: {:,}'.format(num_confirmed_cases) + 
@@ -431,15 +435,67 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
     plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Recuperados')
     plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
-    plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
+    f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
     plot.legend(loc=2)
     plot.gcf().autofmt_xdate()
-    date_format = plot_dates.DateFormatter('%b, %d, %Y')
     plot.gca().xaxis.set_major_formatter(date_format)
     plot.title('Comportamiento global de COVID-19 ' + ' hasta el ' + str(dates_array[ len(dates_array)-1 ]))
     plot.xlabel('Tiempo')
     plot.ylabel('Numero de casos')
     plot.tight_layout()
     plot.show()
+
+def show_martality_bars(dict_death_rates):
+    death_rates = []
+    countrys    = []
+
+    for country, death_rate in dict_death_rates.items():
+        countrys.append(country)
+        death_rates.append(death_rate)
+
+    xmax  = 15
+    ymax  = max(death_rates)
+    ax    = plot.bar(countrys, death_rates)
+    f     = zoom_factory(ax, base_scale = scale)
+
+    plot.gcf().autofmt_xdate()
+    plot.axis([0, xmax, 1, ymax])
+    plot.show()
+      
+def zoom_factory(ax,base_scale = 2.):
+    def zoom_fun(event):
+        # get the current x and y limits
+        cur_xlim   = plot.gca().get_xlim()
+        cur_ylim   = plot.gca().get_ylim()
+        cur_xrange = (cur_xlim[1] - cur_xlim[0])*.5
+        cur_yrange = (cur_ylim[1] - cur_ylim[0])*.5
+        xdata      = event.xdata # get event x location
+        ydata      = event.ydata # get event y location
+
+        if event.button == 'down':
+            # deal with zoom in
+            scale_factor = 1/base_scale
+        elif event.button == 'up':
+            # deal with zoom out
+            scale_factor = base_scale
+        else:
+            # deal with something that should never happen
+            scale_factor = 1
+            # print(event.button)
+
+        # set new limits
+        plot.gca().set_xlim([xdata - (xdata-cur_xlim[0]) / scale_factor, xdata + 
+                             (cur_xlim[1]-xdata) / scale_factor])
+        plot.gca().set_ylim([ydata - (ydata-cur_ylim[0]) / scale_factor, ydata + 
+                             (cur_ylim[1]-ydata) / scale_factor])
+        plot.draw() # force re-draw
+
+    # attach the call back
+    plot.gcf().canvas.mpl_connect('scroll_event', zoom_fun)
+
+    #return the function
+    return zoom_fun
+            

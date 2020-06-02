@@ -144,6 +144,14 @@ def exit():
     print('bye')
     sys.exit()
 
+def get_global_death_rates():
+    # Imprime los indices de mortalidad de cada país.
+    death_rates = Tools.get_all_death_rates()
+    
+    plot.show_martality_bars(death_rates)
+    # for country, d_rate in death_rates.items():
+    #     print(country, d_rate)
+
 print("""   Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
     como casos confirmados, recuperaciones, decesos y casos activos en el país 
     que gustes consultar, o si lo prefieres, comparar la información entre 2 
@@ -159,20 +167,7 @@ print("""   Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
     Puedes consultar las fuentes en github: 
     https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports 
     o en el sitio web: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases 
-
-    # --- --- MENU PRINCIPAL --- --- #
-    0 - Listado de todos los paises 
-    1 - Grafica del estado global
-    2 - Grafica del estado de un país 
-    3 - Grafica de los casos confirmados de un país
-    4 - Grafica de los casos recuperados de un país
-    5 - Grafica de los decesos de un país
-    6 - Grafica de los casos activos de un país
-    7 - Grafica de los casos confirmados entre 2 paises
-    8 - Grafica de los casos recuperados entre 2 paises 
-    9 - Grafica de los decesos entre 2 paises 
-    10 - Grafica de los casos activos entre 2 paises
-    11 - Salir """)
+    """)
 
 options = {
     '0': get_all_countrys,
@@ -186,8 +181,9 @@ options = {
     '8': get_vs_recovered_cases,
     '9': get_vs_deaths_cases,
     '10': get_vs_active_cases,
-    '11': exit
+    '11': get_global_death_rates,
+    '12': exit
 }
 
-option_selected = input('Elige una opción: ')
+option_selected = Tools.main_menu()
 options[option_selected]()
