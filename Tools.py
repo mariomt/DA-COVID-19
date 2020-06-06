@@ -308,27 +308,6 @@ def global_info():
     
     return all_confirmed_cases, all_recovered_cases, all_deaths_cases
 
-def main_menu():
-    # Imprime las opciones del menu principal.
-    print("""# --- --- MENU PRINCIPAL --- --- #
-        0 - Lista de todos los paises disponibles
-        1 - Estado de global de COVID-19
-        2 - Estado de general de un país
-        3 - Comparación de estado general entre 2 paises
-        4 - Casos confirmados de un país
-        5 - Casos recuperados de un pais
-        6 - Decesos de un pais
-        7 - Casos activos de un pais
-        8 - Comparación de casos confirmados entre 2 paises
-        9 - Comparación de casos recuperados entre 2 paises
-        10 - Comparación de decesos entre 2 paises
-        11 - Comparacion de casos activos entre 2 paises
-        12 - Grafica de indices de mortalidad
-        13 - Salir""")
-
-    option_selected = input('Seleccione una opción: ')
-    return option_selected
-
 def get_country_death_rate(country_name):
     # Devuleve el indice porcentual de mortalidad de un país dado.
     # country_name: Es el nombre del país. 

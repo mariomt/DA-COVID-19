@@ -1,7 +1,6 @@
 import re
 
 # --- Validaciones ---- #
-
 def capital_letter(country_name):
     if not re.search('^[A-Z]', country_name): # Si el nombre del pais no empiza con mayuscula
         return True
@@ -27,3 +26,16 @@ def check_empty_country_name(country_space):
         print('El campo del pais esta en blanco o no es valido')
     else:
         return True
+
+def options_validator(options, option_selected):
+    for option in options:
+        if option_selected == option:
+            return options[option_selected]()
+    
+    print(option_selected + ' no es una opción disponible en nuestro menu. :(')
+    option_selected = input('Revise nuestro menu e intentelo nuevamente: ')
+
+    options_validator(options, option_selected)
+    
+
+
