@@ -146,11 +146,12 @@ def exit():
     sys.exit()
 
 def get_global_death_rates():
-    # Grafica los indices de mortalidad de cada país.
+    # Grafica los indices de mortalidad de cada país en una grafica de barras.
     death_rates = Tools.get_all_death_rates()
     plot.show_martality_bars(death_rates)
 
 def get_vs_general_by_country():
+    # Grafica e imprime la información del estado general entre 2 paises.
     first_country = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
@@ -180,6 +181,7 @@ print("""   Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
     """)
 
 options = {
+    # Diccionario de opciones del menu principal.
     '0': get_all_countrys,
     '1': get_global_info,
     '2': get_all_info_by_country,

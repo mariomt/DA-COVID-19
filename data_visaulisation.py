@@ -441,7 +441,7 @@ def show_active_vs_countrys(dates_array, first_name, second_name):
     plot.show()
 
 def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_cases):
-    # Imprime una lista de todos los paises disponibles en la base de datos.    
+    # Grafica e imprime toda la información del estado global.    
     # dates_array: Es un arreglo de fechas de tipo date.
     # confirmed_cases: Es un arreglo de enteros con la información global de los casos confirmados del dataset.
     # recovered_cases: Es un arreglo de enteros con la información global de los casos recuperados del dataset.
@@ -491,9 +491,14 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     plot.show()
 
 def show_martality_bars(dict_death_rates):
+    # Muestra una grafica de barras con la información porcental de mortalidad de todos los paises
+    # en orden asendente. 
+    # dict_death_rates: es un diccionario con el nombre del pais y su respectivo indice de mortalidad
+    dict_death_rates = sorted(dict_death_rates.items(), key=lambda country: country[1], reverse=True)
+
     death_rates = []
     countrys    = []
-    dict_death_rates = sorted(dict_death_rates.items(), key=lambda country: country[1], reverse=True)
+    dates_array = Tools.get_dates_vector()
 
     for country, death_rate in dict_death_rates:
         countrys.append(country)
@@ -501,15 +506,24 @@ def show_martality_bars(dict_death_rates):
 
     xmax = 15
     ymax = max(death_rates) + 2.5
-    ax   = plot.bar(countrys, death_rates)
+    ax   = plot.bar(countrys, death_rates, color='red')
     f    = zoom_factory(ax, base_scale = scale)
 
     plot.gcf().autofmt_xdate()
-    plot.axis([0, xmax, 1, ymax])
+    plot.axis([-1, xmax, 1, ymax])
+    plot.title('Indices de mortalidad por COVID-19 ' + ' hasta el ' + str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('País')
+    plot.ylabel('Porcentaje de mortalidad')
+    plot.tight_layout()
     plot.show()
       
-def zoom_factory(ax,base_scale = 2.):
+def zoom_factory(ax, base_scale = 2.):
+    # --- StackOverflow --- #
+    # Función que permite hacer zoom in o zoom out en una grafica con el scroll del mouse.
+    # ax: Es un objeto de tipo plot (la grafica a la que se le añade el zoom).
+    # base_scale: Es la escala en la que ira aumentando o disminuyendo el zoom.
     def zoom_fun(event):
+        # event: Representa el evento que se esta escuchando (en este caso scroll up y scroll down).
         # get the current x and y limits
         cur_xlim   = plot.gca().get_xlim()
         cur_ylim   = plot.gca().get_ylim()
@@ -543,6 +557,10 @@ def zoom_factory(ax,base_scale = 2.):
     return zoom_fun
             
 def show_general_vs_country(dates_array, country_1, country_2):
+    # Grafica e imprime la información del estado general entre 2 paises.
+    # dates_array: Es un arreglo de fechas de tipo date.
+    # country_1: Es el nombre del primer país.
+    # country_2: Es el nombre del segundo país.
     # Primer país
     confirmed_1, recovered_1, deaths_1 = Tools.get_info_by_country_name(country_1)
     confirmed_1, recovered_1, deaths_1 = Tools.get_clear_vector_info(confirmed_1, recovered_1, deaths_1)
@@ -552,15 +570,20 @@ def show_general_vs_country(dates_array, country_1, country_2):
     first_info_1 = Tools.get_first_case_index(confirmed_1)
     last_info  = len(confirmed_1)-1
 
+    # Ultima información.
     confirmed_cases_1 = confirmed_1[last_info]
     reocvered_cases_1 = recovered_1[last_info]
     active_cases_1    = active_1[last_info]
     deaths_cases_1    = deaths_1[last_info] 
+
+    # Primeros eventos.
     first_confirmed_1 = dates_array[first_info_1]
     first_recovered_1 = Tools.get_first_case_index(recovered_1)
     first_recovered_1 = dates_array[first_recovered_1]
     first_deatth_1    = Tools.get_first_case_index(deaths_1)
     first_deatth_1    = dates_array[first_deatth_1]
+
+    # Indices Porcentuales.
     death_rate_1      = Tools.get_country_death_rate(country_1)
     recovered_rate_1  = (reocvered_cases_1 / confirmed_cases_1)*100
     recovered_rate_1  = round(recovered_rate_1, 2)
@@ -574,15 +597,21 @@ def show_general_vs_country(dates_array, country_1, country_2):
     active_2 = get_active_cases(confirmed_2, recovered_2, deaths_2)
 
     first_info_2 = Tools.get_first_case_index(confirmed_2)
+
+    # Ultima información.
     confirmed_cases_2 = confirmed_2[last_info]
     recovered_cases_2 = recovered_2[last_info]
     active_cases_2    = active_2[last_info]
     deaths_cases_2    = deaths_2[last_info]
+    
+    # Fechas de primeros eventos.
     first_confirmed_2 = dates_array[first_info_2]
     first_recovered_2 = Tools.get_first_case_index(recovered_2)
     first_recovered_2 = dates_array[first_recovered_2]
     first_deatth_2    = Tools.get_first_case_index(deaths_2)
     first_deatth_2    = dates_array[first_deatth_2]
+
+    # Indices procentuales.
     death_rate_2      = Tools.get_country_death_rate(country_2)
     recovered_rate_2  = (recovered_cases_2 / confirmed_cases_2)*100
     recovered_rate_2  = round(recovered_rate_2, 2)

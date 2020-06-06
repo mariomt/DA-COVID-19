@@ -309,6 +309,7 @@ def global_info():
     return all_confirmed_cases, all_recovered_cases, all_deaths_cases
 
 def main_menu():
+    # Imprime las opciones del menu principal.
     print("""# --- --- MENU PRINCIPAL --- --- #
         0 - Lista de todos los paises disponibles
         1 - Estado de global de COVID-19
@@ -329,6 +330,8 @@ def main_menu():
     return option_selected
 
 def get_country_death_rate(country_name):
+    # Devuleve el indice porcentual de mortalidad de un país dado.
+    # country_name: Es el nombre del país. 
     confirmed = get_confirmed_cases(country_name)
     deaths    = get_deaths_cases(country_name)
     
@@ -343,6 +346,8 @@ def get_country_death_rate(country_name):
     return death_rate
 
 def get_all_death_rates():
+    # Devuleve un diccionario (o un arreglo en formato nombre:valor) con los idnices porcentuales
+    # de mortalidad de todos los paises. 
     death_rates = {}
     countrys    = show_all_countrys()
 
