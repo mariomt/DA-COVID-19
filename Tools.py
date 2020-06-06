@@ -172,18 +172,24 @@ def convert_to_date_type(dates_array):
     return date_type_array
 
 def remove_zeros(vector):
-    # --- --- EN DESARROLLO -- --- #
     # Devuleve un arreglo de enteros que no contengan ceros.
     # vector: Es un arreglo de enteros.
-    size = len(vector)
-    aux = -1
     new_vector = []
 
-    for n in range(size):
-        if not vector[n] == 0:
-            new_vector.append( vector[n] )
+    for n in vector:
+        if not n == 0:
+            new_vector.append(n)
 
     return new_vector
+
+def get_first_case_index(vector_confirmed):
+    index = 0
+
+    for n in vector_confirmed:
+        if n == 0:
+            index += 1
+
+    return index
 
 def get_confirmed_cases(country_name):
     # Devuleve un arreglo de enteros que contiene la información sobre los casos confirmados de un país.
@@ -307,16 +313,17 @@ def main_menu():
         0 - Lista de todos los paises disponibles
         1 - Estado de global de COVID-19
         2 - Estado de general de un país
-        3 - Casos confirmados de un país
-        4 - Casos recuperados de un pais
-        5 - Decesos de un pais
-        6 - Casos activos de un pais
-        7 - Comparación de casos confirmados entre 2 paises
-        8 - Comparación de casos recuperados entre 2 paises
-        9 - Comparación de decesos entre 2 paises
-        10 - Comparacion de casos activos entre 2 paises
-        11 - Grafica de indices de mortalidad
-        12 - Salir""")
+        3 - Comparación de estado general entre 2 paises
+        4 - Casos confirmados de un país
+        5 - Casos recuperados de un pais
+        6 - Decesos de un pais
+        7 - Casos activos de un pais
+        8 - Comparación de casos confirmados entre 2 paises
+        9 - Comparación de casos recuperados entre 2 paises
+        10 - Comparación de decesos entre 2 paises
+        11 - Comparacion de casos activos entre 2 paises
+        12 - Grafica de indices de mortalidad
+        13 - Salir""")
 
     option_selected = input('Seleccione una opción: ')
     return option_selected

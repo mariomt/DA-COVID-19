@@ -27,6 +27,7 @@ def get_confirmed_cases_by_country():
         country_name = country_name.capitalize()    
 
     confirmed_cases = Tools.get_confirmed_cases(country_name)
+
     plot.show_country_confirmed_cases(dates, confirmed_cases, country_name)
 
 def get_recovered_cases_by_country():
@@ -145,12 +146,21 @@ def exit():
     sys.exit()
 
 def get_global_death_rates():
-    # Imprime los indices de mortalidad de cada país.
+    # Grafica los indices de mortalidad de cada país.
     death_rates = Tools.get_all_death_rates()
-    
     plot.show_martality_bars(death_rates)
-    # for country, d_rate in death_rates.items():
-    #     print(country, d_rate)
+
+def get_vs_general_by_country():
+    first_country = input('Ingrese el primer país: ')
+    second_country = input('Ingrese el segundo país: ')
+
+    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
+        first_country = first_country.capitalize()
+
+    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
+        second_country = second_country.capitalize()
+
+    plot.show_general_vs_country(dates, first_country, second_country)
 
 print("""   Bienvenido. Aqui puedes consulatr información acerca del COVID-19,
     como casos confirmados, recuperaciones, decesos y casos activos en el país 
@@ -173,16 +183,17 @@ options = {
     '0': get_all_countrys,
     '1': get_global_info,
     '2': get_all_info_by_country,
-    '3': get_confirmed_cases_by_country,
-    '4': get_recovered_cases_by_country,
-    '5': get_deaths_cases_by_country,
-    '6': get_active_cases_by_country,
-    '7': get_vs_confirmed_cases,
-    '8': get_vs_recovered_cases,
-    '9': get_vs_deaths_cases,
-    '10': get_vs_active_cases,
-    '11': get_global_death_rates,
-    '12': exit
+    '3': get_vs_general_by_country,
+    '4': get_confirmed_cases_by_country,
+    '5': get_recovered_cases_by_country,
+    '6': get_deaths_cases_by_country,
+    '7': get_active_cases_by_country,
+    '8': get_vs_confirmed_cases,
+    '9': get_vs_recovered_cases,
+    '10': get_vs_deaths_cases,
+    '11': get_vs_active_cases,
+    '12': get_global_death_rates,
+    '13': exit
 }
 
 option_selected = Tools.main_menu()

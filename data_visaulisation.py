@@ -17,14 +17,21 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
     # recovered_cases: Es un arreglo de enteros que contiene la información de los casos recuperados
     # deaths_cases: Es un arreglo de enteros que contiene la información de los decesos
     # country_name: Es el nombre del país.
-    active_cases = get_active_cases(confirmed_cases, recovered_cases, deaths_cases)
-    current_info = len(dates_array)-1
+    active_cases    = get_active_cases(confirmed_cases, recovered_cases, deaths_cases)
+    first_info      = Tools.get_first_case_index(confirmed_cases)
+    last_info       = len(dates_array)
+    confirmed_cases = Tools.remove_zeros(confirmed_cases)
+    recovered_cases = recovered_cases[ first_info:last_info ]
+    deaths_cases    = deaths_cases[ first_info:last_info ]
+    dates_array     = dates_array[ first_info:last_info ]
+    active_cases    = active_cases[ first_info:last_info ]
 
     # Información de la ultima fecha
-    confirmed = confirmed_cases[current_info]
-    recovered = recovered_cases[current_info]
-    deaths    = deaths_cases[current_info]
-    actives   = active_cases[current_info]
+    last_info = len(dates_array)-1
+    confirmed = confirmed_cases[last_info]
+    recovered = recovered_cases[last_info]
+    deaths    = deaths_cases[last_info]
+    actives   = active_cases[last_info]
 
     # Calculando porsejantes 
     recovered_rate = (recovered / confirmed)*100
@@ -38,6 +45,7 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
 
     # Imprimiendo información de grafica
     print('\n --- --- ' + country_name + ' --- ---' +
+          '\n Primer caso confirmado: '          + str(dates_array[0]) + 
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Casos activos actualmente: {:,}'   .format(actives) + 
           '\n Casos recuperados acumulados: {:,}'.format(recovered) + 
@@ -50,7 +58,7 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
     plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Recuperados')
     plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Muertes')
-    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='magenta', label='Activos')
     f  = zoom_factory(ax, base_scale = scale)
     
     # Estructura
@@ -70,7 +78,7 @@ def get_active_cases(confirmed_cases, recovered_cases, deaths_cases):
     # deaths_cases: Es un arreglo de enteros con la información de los decesos.
     array_size = len(confirmed_cases)
     active_cases = []
-    
+    # print(confirmed_cases)
     for n in range(array_size):
         active_cases.append(confirmed_cases[n] - (recovered_cases[n] + deaths_cases[n]))
     
@@ -81,13 +89,18 @@ def show_country_confirmed_cases(dates_array, confirmed_cases, country_name):
     # dates_array: Es un arreglo de fehcas de tipo date.
     # confirmed_cases: Es un arreglo de enteros con los caoss confirmados de un país
     # country_name: Es el nombre del país. 
-    current_info = len(dates_array)-1
+    first_info      = Tools.get_first_case_index(confirmed_cases)
+    last_info       = len(dates_array)
+    confirmed_cases = Tools.remove_zeros(confirmed_cases)
+    dates_array     = dates_array[ first_info:last_info ]
 
     # Información de la ultima fecha.
-    confirmed = confirmed_cases[current_info]
+    last_info = len(dates_array)-1
+    confirmed = confirmed_cases[last_info]
 
     # Imprimiendo la información de la grafica
     print('\n --- --- ' + country_name + ' --- ---'
+          '\n Primer caso confirmado: '          + str(dates_array[0]) + 
           '\n Casos confirmados acumulados: {:,}'.format(confirmed))
 
     # Graficación de información
@@ -110,18 +123,25 @@ def show_country_recovered_cases(dates_array, recovered_cases, country_name):
     # dates_array: Es un arreglo de fehcas de tipo date.
     # recovered_cases: Es un arreglo de enteros con la información de los casos recuperados de un país.
     # country_name: Es el nombre del país. 
-    current_info = len(dates_array)-1
+    confirmed  = Tools.get_confirmed_cases(country_name)
+    first_info = Tools.get_first_case_index(recovered_cases)
+    last_info  = len(dates_array)
+
+    recovered_cases = Tools.remove_zeros(recovered_cases)
+    confirmed       = confirmed[ first_info:last_info ]
+    dates_array     = dates_array[ first_info:last_info ]
 
     # Información de la ultima fecha.
-    confirmed = Tools.get_confirmed_cases(country_name)
+    current_info = len(dates_array)-1
     confirmed = confirmed[current_info]
     recovered = recovered_cases[current_info]
 
     # Porcentaje de recuperación
     recovered_rate = (recovered / confirmed)*100
-    recovered_rate = round(recovered_rate, 4)
+    recovered_rate = round(recovered_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---'
+          '\n Primer caso recuperado: ----> '    + str(dates_array[0]) + 
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Casos recuperados acumulados: {:,}'.format(recovered) +
           '\n Indice de mortalidad: ------> '    + str(recovered_rate) + '%')
@@ -145,18 +165,25 @@ def show_country_deaths_cases(dates_array, deaths_cases, country_name):
     # dates_array: Es un arreglo de fehcas de tipo date.
     # deaths_cases: Es un arreglo de enteros con la información de los decesos de un país.
     # country_name: Es el nombre del país. 
-    current_info = len(dates_array)-1
+    confirmed  = Tools.get_confirmed_cases(country_name)
+    last_info  = len(dates_array)
+    first_info = Tools.get_first_case_index(deaths_cases)
+
+    deaths_cases = Tools.remove_zeros(deaths_cases)
+    confirmed    = confirmed[ first_info:last_info ]
+    dates_array  = dates_array[ first_info:last_info ]
 
     # Información de la ultima fecha.
-    confirmed = Tools.get_confirmed_cases(country_name)
-    confirmed = confirmed[current_info]
-    deaths    = deaths_cases[current_info]
+    last_info = len(dates_array)-1
+    confirmed = confirmed[last_info]
+    deaths    = deaths_cases[last_info]
 
     # Pocentaje de mortalidad
     death_rate   = (deaths / confirmed)*100
     death_rate   = round(death_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---' +
+          '\n Primer deceso: -------------> '    + str(dates_array[0]) + 
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Decesos acumulados: --------> {:,}'.format(deaths) +
           '\n Indice de mortalidad: ------> '    + str(death_rate) + '%')
@@ -191,14 +218,14 @@ def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, dea
 
     # Porcentaje de casos activos.
     active_rate = (actives / confirmed)*100
-    active_rate = round(active_rate, 4)
+    active_rate = round(active_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---' +
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Casos activos actualmente: {:,}'   .format(actives) +
           '\n Indice de casos activos: '         + str(active_rate) + '%')
 
-    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Casos activos')
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='magenta', label='Casos activos')
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -219,19 +246,24 @@ def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_s
     # confirmed_second_country: Es un arreglo de enteros con los casos conformados del segundo país.
     # first_name: Es el nombre del primer país.
     # second_name: Es el nombre del segundo país.
-    current_info = len(dates_array)-1
+    last_info = len(dates_array)-1
 
     # Primer país
-    confirmed_1 = confirmed_first_country[current_info]
-
+    confirmed_1  = confirmed_first_country[last_info]
+    first_info_1 = Tools.get_first_case_index(confirmed_first_country)
+    first_case_1 = dates_array[first_info_1]
+    
     # segundo pais
-    confirmed_2 = confirmed_second_country[current_info]
+    confirmed_2  = confirmed_second_country[last_info]
+    first_info_2 = Tools.get_first_case_index(confirmed_second_country)
+    first_case_2 = dates_array[first_info_2]
 
     print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |' + '--- --- ' + second_name + ' --- ---' +
+          '\n Primer caso confirmado: ----> '   + str(first_case_1) + ' |-VS-|-> '      + str(first_case_2) +
           '\n Casos confirmados acumulados: {:,}'.format(confirmed_1) + ' |-VS-|-> {:,}'.format(confirmed_2))
 
-    plot.plot(dates_array, confirmed_first_country, linestyle='solid', color='blue', label=first_name)
-    ax = plot.plot(dates_array, confirmed_second_country, linestyle='solid', color='green', label=second_name)
+    plot.plot(dates_array, confirmed_first_country, linestyle='solid', color='red', label=first_name)
+    ax = plot.plot(dates_array, confirmed_second_country, linestyle='dashed', color='red', label=second_name)
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -256,31 +288,36 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
 
     # Primer país
     # Información de la ultima fecha del primer país.
-    confirmed_1      = Tools.get_confirmed_cases(first_name)
-    confirmed_1      = confirmed_1[current_info]
-    recovered_1      = recovered_first_country[current_info]
+    confirmed_1  = Tools.get_confirmed_cases(first_name)
+    confirmed_1  = confirmed_1[current_info]
+    recovered_1  = recovered_first_country[current_info]
+    first_info_1 = Tools.get_first_case_index(recovered_first_country)
+    first_case_1 = dates_array[first_info_1]
 
     # Porcentaje de recuperación del primer país.
     recovered_rate_1 = (recovered_1 / confirmed_1)*100
-    recovered_rate_1 = round(recovered_rate_1, 4)
+    recovered_rate_1 = round(recovered_rate_1, 2)
 
     # Segundo país
     # Información de la ulitma fecha del segundo país.
     confirmed_2 = Tools.get_confirmed_cases(second_name)
     confirmed_2 = confirmed_2[current_info]
     recovered_2  = recovered_second_country[current_info]
+    first_info_2 = Tools.get_first_case_index(recovered_second_country)
+    first_case_2 = dates_array[first_info_2]
 
     # porcentaje de recuperación del segundo país.
     recovered_rate_2 = (recovered_2 / confirmed_2)*100
-    recovered_rate_2 = round(recovered_rate_2, 4)
+    recovered_rate_2 = round(recovered_rate_2, 2)
 
-    print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |' + '--- --- ' + second_name + ' --- ---' +
-          '\n Casos confirmados acumulados: {:,}'.format(confirmed_1) + ' |-VS-|-> {:,}'.format(confirmed_2) +
-          '\n Casos recuperados acumulados: {:,}'.format(recovered_1) + ' |-VS-|-> {:,}'.format(recovered_2) +
-          '\n Indice de recuperación: ----> ' + str(recovered_rate_1) + '%'    + ' |-VS-|-> ' + str(recovered_rate_2) + '%')
+    print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |'     + '--- --- '         + second_name + ' --- ---' +
+          '\n Primer caso recuperado: ----> '    + str(first_case_1)     + ' |-VS-|-> '       + str(first_case_2) +
+          '\n Casos confirmados acumulados: {:,}'.format(confirmed_1)    + ' |-VS-|-> {:,}'   .format(confirmed_2) +
+          '\n Casos recuperados acumulados: {:,}'.format(recovered_1)    + ' |-VS-|-> {:,}'   .format(recovered_2) +
+          '\n Indice de recuperación: ----> '    + str(recovered_rate_1) + '%' + ' |-VS-|-> ' + str(recovered_rate_2) + '%')
 
-    plot.plot(dates_array, recovered_first_country, linestyle='solid', color='blue', label=first_name)
-    ax = plot.plot(dates_array, recovered_second_country, linestyle='solid', color='green', label=second_name)
+    plot.plot(dates_array, recovered_first_country, linestyle='solid', color='green', label=first_name)
+    ax = plot.plot(dates_array, recovered_second_country, linestyle='dashed', color='green', label=second_name)
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -308,6 +345,8 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
     confirmed_1 = Tools.get_confirmed_cases(first_name)
     confirmed_1 = confirmed_1[current_info]
     deaths_1    = deaths_first_country[current_info]
+    first_info_1 = Tools.get_first_case_index(deaths_first_country)
+    first_case_1 = dates_array[first_info_1]
 
     # Porcentaje de mortalidad del primer país.
     death_rate_1 = (deaths_1 / confirmed_1)*100
@@ -318,18 +357,21 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
     confirmed_2 = Tools.get_confirmed_cases(second_name)
     confirmed_2 = confirmed_2[current_info]
     deaths_2    = deaths_second_country[current_info]
+    first_info_2 = Tools.get_first_case_index(deaths_second_country)
+    first_case_2 = dates_array[first_info_2]
 
     # Porcentaje de mortalidad del segundo país.
     death_rate_2 = (deaths_2 / confirmed_2)*100
     death_rate_2 = round(death_rate_2, 2)
 
-    print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |' + '--- --- ' + second_name + ' --- ---' +
-          '\n Casos confirmados acumulados: {:,}'.format(confirmed_1)  + ' |-VS-|-> {:,}'.format(confirmed_2) +
-          '\n Decesos acumulados: --------> {:,}'.format(deaths_1)     + ' |-VS-|-> {:,}'.format(deaths_2) +
-          '\n Indice de mortalidad: ------> '+ str(death_rate_1) + '%'    + ' |-VS-|-> ' + str(death_rate_2) + '%')
+    print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |'  + '--- --- ' + second_name + ' --- ---' +
+          '\n Primer deceso: -------------> '    + str(first_case_1)  + ' |-VS-|-> '       + str(first_case_2) +
+          '\n Casos confirmados acumulados: {:,}'.format(confirmed_1) + ' |-VS-|-> {:,}'   .format(confirmed_2) +
+          '\n Decesos acumulados: --------> {:,}'.format(deaths_1)    + ' |-VS-|-> {:,}'   .format(deaths_2) +
+          '\n Indice de mortalidad: ------> '    + str(death_rate_1)  + '%' + ' |-VS-|-> ' + str(death_rate_2) + '%')
 
-    plot.plot(dates_array, deaths_first_country, linestyle='solid', color='blue', label=first_name)
-    ax = plot.plot(dates_array, deaths_second_country, linestyle='solid', color='green', label=second_name)
+    plot.plot(dates_array, deaths_first_country, linestyle='solid', color='black', label=first_name)
+    ax = plot.plot(dates_array, deaths_second_country, linestyle='dashed', color='black', label=second_name)
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -367,7 +409,7 @@ def show_active_vs_countrys(dates_array, first_name, second_name):
 
     # Porcentaje de casos activos del primer país.
     active_rate_1   = (num_active_1 / num_confirmed_1)*100
-    active_rate_1   = round(active_rate_1, 4)
+    active_rate_1   = round(active_rate_1, 2)
 
     # Segundo país
     # Información de la ultima fecha del segundo país.
@@ -376,15 +418,15 @@ def show_active_vs_countrys(dates_array, first_name, second_name):
 
     # Porcentaje de casos activos del segundo país
     active_rate_2   = (num_active_2 / num_confirmed_2)*100
-    active_rate_2   = round(active_rate_2, 4)
+    active_rate_2   = round(active_rate_2, 2)
 
     print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |' + '--- --- ' + second_name + ' --- ---' +
           '\n Casos confirmados acumulados: {:,}'.format(num_confirmed_1)  + ' |-VS-|-> {:,}'.format(num_confirmed_2) +
           '\n Casos activos actualmente: -> {:,}'.format(num_active_1)     + ' |-VS-|-> {:,}'.format(num_active_2) +
           '\n Indice de casos activos: ---> '+ str(active_rate_1) + '%'    + ' |-VS-|-> ' + str(active_rate_2) + '%')
 
-    plot.plot(dates_array, active_first_country, linestyle='solid', color='blue', label=first_name)
-    ax = plot.plot(dates_array, active_second_country, linestyle='solid', color='green', label=second_name)
+    plot.plot(dates_array, active_first_country, linestyle='solid', color='magenta', label=first_name)
+    ax = plot.plot(dates_array, active_second_country, linestyle='dashed', color='magenta', label=second_name)
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -435,7 +477,7 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
     plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Recuperados')
     plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
-    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='yellow', label='Activos')
+    ax = plot.plot(dates_array, active_cases, linestyle='solid', color='magenta', label='Activos')
     f  = zoom_factory(ax, base_scale = scale)
 
     # Estructura
@@ -451,15 +493,16 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
 def show_martality_bars(dict_death_rates):
     death_rates = []
     countrys    = []
+    dict_death_rates = sorted(dict_death_rates.items(), key=lambda country: country[1], reverse=True)
 
-    for country, death_rate in dict_death_rates.items():
+    for country, death_rate in dict_death_rates:
         countrys.append(country)
         death_rates.append(death_rate)
 
-    xmax  = 15
-    ymax  = max(death_rates)
-    ax    = plot.bar(countrys, death_rates)
-    f     = zoom_factory(ax, base_scale = scale)
+    xmax = 15
+    ymax = max(death_rates) + 2.5
+    ax   = plot.bar(countrys, death_rates)
+    f    = zoom_factory(ax, base_scale = scale)
 
     plot.gcf().autofmt_xdate()
     plot.axis([0, xmax, 1, ymax])
@@ -499,3 +542,86 @@ def zoom_factory(ax,base_scale = 2.):
     #return the function
     return zoom_fun
             
+def show_general_vs_country(dates_array, country_1, country_2):
+    # Primer país
+    confirmed_1, recovered_1, deaths_1 = Tools.get_info_by_country_name(country_1)
+    confirmed_1, recovered_1, deaths_1 = Tools.get_clear_vector_info(confirmed_1, recovered_1, deaths_1)
+    
+    active_1 = get_active_cases(confirmed_1, recovered_1, deaths_1)
+    
+    first_info_1 = Tools.get_first_case_index(confirmed_1)
+    last_info  = len(confirmed_1)-1
+
+    confirmed_cases_1 = confirmed_1[last_info]
+    reocvered_cases_1 = recovered_1[last_info]
+    active_cases_1    = active_1[last_info]
+    deaths_cases_1    = deaths_1[last_info] 
+    first_confirmed_1 = dates_array[first_info_1]
+    first_recovered_1 = Tools.get_first_case_index(recovered_1)
+    first_recovered_1 = dates_array[first_recovered_1]
+    first_deatth_1    = Tools.get_first_case_index(deaths_1)
+    first_deatth_1    = dates_array[first_deatth_1]
+    death_rate_1      = Tools.get_country_death_rate(country_1)
+    recovered_rate_1  = (reocvered_cases_1 / confirmed_cases_1)*100
+    recovered_rate_1  = round(recovered_rate_1, 2)
+    active_rate_1     = (active_cases_1 / confirmed_cases_1)*100
+    active_rate_1     = round(active_rate_1, 2)
+
+    # Segundo país
+    confirmed_2, recovered_2, deaths_2 = Tools.get_info_by_country_name(country_2)
+    confirmed_2, recovered_2, deaths_2 = Tools.get_clear_vector_info(confirmed_2, recovered_2, deaths_2)
+
+    active_2 = get_active_cases(confirmed_2, recovered_2, deaths_2)
+
+    first_info_2 = Tools.get_first_case_index(confirmed_2)
+    confirmed_cases_2 = confirmed_2[last_info]
+    recovered_cases_2 = recovered_2[last_info]
+    active_cases_2    = active_2[last_info]
+    deaths_cases_2    = deaths_2[last_info]
+    first_confirmed_2 = dates_array[first_info_2]
+    first_recovered_2 = Tools.get_first_case_index(recovered_2)
+    first_recovered_2 = dates_array[first_recovered_2]
+    first_deatth_2    = Tools.get_first_case_index(deaths_2)
+    first_deatth_2    = dates_array[first_deatth_2]
+    death_rate_2      = Tools.get_country_death_rate(country_2)
+    recovered_rate_2  = (recovered_cases_2 / confirmed_cases_2)*100
+    recovered_rate_2  = round(recovered_rate_2, 2)
+    active_rate_2     = (active_cases_2 / confirmed_cases_2)*100
+    active_rate_2     = round(active_rate_2, 2)
+    
+    print('\n--- --- ' + country_1 + ' --- ---' + ' | --- VS --- |' + '--- --- ' + country_2 + ' --- ---' +
+          '\n Primer caso confirmado: ----> '     + str(first_confirmed_1)      + ' |-VS-|-> '     + str(first_confirmed_2) +
+          '\n Casos confirmados acumulados: {:,}' .format(confirmed_cases_1)    + ' |-VS-|-> {:,}' .format(confirmed_cases_2) +
+          '\n Casos activos actualmente: -> {:,}' .format(active_cases_1)       + ' |-VS-|-> {:,}' .format(active_cases_2) +
+          '\n Primer caso recuperado: ----> '     + str(first_recovered_1)      + ' |-VS-|-> '     + str(first_recovered_2) +
+          '\n Casos recuperados acumulados: {:,}' .format(reocvered_cases_1)    + ' |-VS-|-> {:,}' .format(recovered_cases_2) +
+          '\n Primer caso confirmado: ----> '     + str(first_deatth_1)         + ' |-VS-|-> '     + str(first_deatth_2) +
+          '\n Decesos acumulados: --------> {:,}' .format(deaths_cases_1)       + ' |-VS-|-> {:,}' .format(deaths_cases_2) +
+          '\n Indice de mortalidad: ------> '     + str(death_rate_1)     + '%' + ' |-VS-|-> '     + str(death_rate_2) + '%' +
+          '\n Indice de recuperación: ----> '     + str(recovered_rate_1) + '%' + ' |-VS-|-> '     + str(recovered_rate_2) + '%' +
+          '\n Indice de casos activos: ---> '     + str(active_rate_1)    + '%' + ' |-VS-|-> '     + str(active_rate_2) + '%')
+
+    plot.plot(dates_array, confirmed_1, linestyle='solid', color='red', label='Casos confirmados ' + country_1)
+    plot.plot(dates_array, recovered_1, linestyle='solid', color='green', label='Casos recuperados ' + country_1)
+    plot.plot(dates_array, deaths_1, linestyle='solid', color='black', label='Decesos ' + country_1)
+    plot.plot(dates_array, active_1, linestyle='solid', color='magenta', label='Casos activos ' + country_1)
+
+    plot.plot(dates_array, confirmed_2, linestyle='dashed', color='red', label='Casos confirmados ' + country_2)
+    plot.plot(dates_array, recovered_2, linestyle='dashed', color='green', label='Casos recuperados ' + country_2)
+    plot.plot(dates_array, deaths_2, linestyle='dashed', color='black', label='Decesos ' + country_2)
+    ax = plot.plot(dates_array, active_2, linestyle='dashed', color='magenta', label='Casos activos ' + country_2)
+    f  = zoom_factory(ax, base_scale = scale)
+
+    # Estructura
+    plot.legend(loc=2)
+    plot.gcf().autofmt_xdate()
+    plot.gca().xaxis.set_major_formatter(date_format)
+    plot.title('Comportamiento general de COVID-19 ' + country_1 + 'VS. ' + country_2 + ' hasta el ' + str(dates_array[ len(dates_array)-1 ]))
+    plot.xlabel('Tiempo')
+    plot.ylabel('Numero de casos')
+    plot.tight_layout()
+    plot.show()
+
+
+
+
