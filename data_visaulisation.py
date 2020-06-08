@@ -17,9 +17,11 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
     # recovered_cases: Es un arreglo de enteros que contiene la información de los casos recuperados
     # deaths_cases: Es un arreglo de enteros que contiene la información de los decesos
     # country_name: Es el nombre del país.
+    
+    first_info = Tools.get_first_case_index(confirmed_cases)
+    last_info  = len(dates_array)
+
     active_cases    = get_active_cases(confirmed_cases, recovered_cases, deaths_cases)
-    first_info      = Tools.get_first_case_index(confirmed_cases)
-    last_info       = len(dates_array)
     confirmed_cases = Tools.remove_zeros(confirmed_cases)
     recovered_cases = recovered_cases[ first_info:last_info ]
     deaths_cases    = deaths_cases[ first_info:last_info ]
@@ -127,24 +129,29 @@ def show_country_recovered_cases(dates_array, recovered_cases, country_name):
     first_info = Tools.get_first_case_index(recovered_cases)
     last_info  = len(dates_array)
 
-    recovered_cases = Tools.remove_zeros(recovered_cases)
-    confirmed       = confirmed[ first_info:last_info ]
-    dates_array     = dates_array[ first_info:last_info ]
+    if first_info == last_info:
+        recovered = 0
+        recovered_rate = 0.0
+        confirmed = confirmed[last_info-1]
+    else:
+        recovered_cases = Tools.remove_zeros(recovered_cases)
+        confirmed       = confirmed[ first_info:last_info ]
+        dates_array     = dates_array[ first_info:last_info ]
 
-    # Información de la ultima fecha.
-    current_info = len(dates_array)-1
-    confirmed = confirmed[current_info]
-    recovered = recovered_cases[current_info]
+        # Información de la ultima fecha.
+        current_info = len(dates_array)-1
+        confirmed = confirmed[current_info]
+        recovered = recovered_cases[current_info]
 
-    # Porcentaje de recuperación
-    recovered_rate = (recovered / confirmed)*100
-    recovered_rate = round(recovered_rate, 2)
+        # Porcentaje de recuperación
+        recovered_rate = (recovered / confirmed)*100
+        recovered_rate = round(recovered_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---'
           '\n Primer caso recuperado: ----> '    + str(dates_array[0]) + 
           '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
           '\n Casos recuperados acumulados: {:,}'.format(recovered) +
-          '\n Indice de mortalidad: ------> '    + str(recovered_rate) + '%')
+          '\n Indice de recuperación: ------> '    + str(recovered_rate) + '%')
 
     ax = plot.plot(dates_array, recovered_cases, linestyle='solid', color='green', label='Casos recuperados')
     f  = zoom_factory(ax, base_scale = scale)
@@ -169,38 +176,42 @@ def show_country_deaths_cases(dates_array, deaths_cases, country_name):
     last_info  = len(dates_array)
     first_info = Tools.get_first_case_index(deaths_cases)
 
-    deaths_cases = Tools.remove_zeros(deaths_cases)
-    confirmed    = confirmed[ first_info:last_info ]
-    dates_array  = dates_array[ first_info:last_info ]
+    if first_info == last_info:
+        print('No se han registrado deceos en ' + country_name)
+    else:
+        deaths_cases = Tools.remove_zeros(deaths_cases)
+        confirmed    = confirmed[ first_info:last_info ]
+        dates_array  = dates_array[ first_info:last_info ]
 
-    # Información de la ultima fecha.
-    last_info = len(dates_array)-1
-    confirmed = confirmed[last_info]
-    deaths    = deaths_cases[last_info]
+        # Información de la ultima fecha.
+        # print(str(len(confirmed)) + ', ' + str(last_info))
+        last_info = len(dates_array)-1
+        confirmed = confirmed[last_info]
+        deaths    = deaths_cases[last_info]
 
-    # Pocentaje de mortalidad
-    death_rate   = (deaths / confirmed)*100
-    death_rate   = round(death_rate, 2)
+        # Pocentaje de mortalidad
+        death_rate = (deaths / confirmed)*100
+        death_rate = round(death_rate, 2)
 
-    print('\n --- --- ' + country_name + ' --- ---' +
-          '\n Primer deceso: -------------> '    + str(dates_array[0]) + 
-          '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
-          '\n Decesos acumulados: --------> {:,}'.format(deaths) +
-          '\n Indice de mortalidad: ------> '    + str(death_rate) + '%')
+        print('\n --- --- ' + country_name + ' --- ---' +
+            '\n Primer deceso: -------------> '    + str(dates_array[0]) + 
+            '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
+            '\n Decesos acumulados: --------> {:,}'.format(deaths) +
+            '\n Indice de mortalidad: ------> '    + str(death_rate) + '%')
 
-    ax = plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
-    f  = zoom_factory(ax, base_scale = scale)
+        ax = plot.plot(dates_array, deaths_cases, linestyle='solid', color='black', label='Decesos')
+        f  = zoom_factory(ax, base_scale = scale)
 
-    # Estructura
-    plot.legend(loc=2)
-    plot.gcf().autofmt_xdate()
-    plot.gca().xaxis.set_major_formatter(date_format)
-    plot.title('Comportamiento de los decesos por deCOVID-19 en ' + country_name + ' hasta el ' + 
-                str(dates_array[ len(dates_array)-1 ]))
-    plot.xlabel('Tiempo')
-    plot.ylabel('Numero de decesos')
-    plot.tight_layout()
-    plot.show()
+        # Estructura
+        plot.legend(loc=2)
+        plot.gcf().autofmt_xdate()
+        plot.gca().xaxis.set_major_formatter(date_format)
+        plot.title('Comportamiento de los decesos por deCOVID-19 en ' + country_name + ' hasta el ' + 
+                    str(dates_array[ len(dates_array)-1 ]))
+        plot.xlabel('Tiempo')
+        plot.ylabel('Numero de decesos')
+        plot.tight_layout()
+        plot.show()
 
 def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, deaths_cases, country_name):
     # Grafica y muestra solo los casos activos de un país.
@@ -292,7 +303,11 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
     confirmed_1  = confirmed_1[current_info]
     recovered_1  = recovered_first_country[current_info]
     first_info_1 = Tools.get_first_case_index(recovered_first_country)
-    first_case_1 = dates_array[first_info_1]
+
+    if recovered_1 == 0:
+        first_case_1 = 'No hay casos recuperados'        
+    else:
+        first_case_1 = dates_array[first_info_1]
 
     # Porcentaje de recuperación del primer país.
     recovered_rate_1 = (recovered_1 / confirmed_1)*100
@@ -300,11 +315,15 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
 
     # Segundo país
     # Información de la ulitma fecha del segundo país.
-    confirmed_2 = Tools.get_confirmed_cases(second_name)
-    confirmed_2 = confirmed_2[current_info]
+    confirmed_2  = Tools.get_confirmed_cases(second_name)
+    confirmed_2  = confirmed_2[current_info]
     recovered_2  = recovered_second_country[current_info]
     first_info_2 = Tools.get_first_case_index(recovered_second_country)
-    first_case_2 = dates_array[first_info_2]
+
+    if recovered_2 == 0:
+        first_case_2 = 'No hay casos recuperados'
+    else: 
+        first_case_2 = dates_array[first_info_2]
 
     # porcentaje de recuperación del segundo país.
     recovered_rate_2 = (recovered_2 / confirmed_2)*100
@@ -345,24 +364,34 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
     confirmed_1 = Tools.get_confirmed_cases(first_name)
     confirmed_1 = confirmed_1[current_info]
     deaths_1    = deaths_first_country[current_info]
-    first_info_1 = Tools.get_first_case_index(deaths_first_country)
-    first_case_1 = dates_array[first_info_1]
 
-    # Porcentaje de mortalidad del primer país.
-    death_rate_1 = (deaths_1 / confirmed_1)*100
-    death_rate_1 = round(death_rate_1, 2)
+    if deaths_1 == 0:
+        first_case_1 = 0
+        death_rate_1 = 0.0
+    else: 
+        first_info_1 = Tools.get_first_case_index(deaths_first_country)
+        first_case_1 = dates_array[first_info_1]
+
+        # Porcentaje de mortalidad del primer país.
+        death_rate_1 = (deaths_1 / confirmed_1)*100
+        death_rate_1 = round(death_rate_1, 2)
 
     # Segundo país
     # Información de la ultima fehca del primer país.
     confirmed_2 = Tools.get_confirmed_cases(second_name)
     confirmed_2 = confirmed_2[current_info]
     deaths_2    = deaths_second_country[current_info]
-    first_info_2 = Tools.get_first_case_index(deaths_second_country)
-    first_case_2 = dates_array[first_info_2]
 
-    # Porcentaje de mortalidad del segundo país.
-    death_rate_2 = (deaths_2 / confirmed_2)*100
-    death_rate_2 = round(death_rate_2, 2)
+    if deaths_2 == 0:
+        first_case_2 = 0
+        death_rate_2 = 0.0
+    else: 
+        first_info_2 = Tools.get_first_case_index(deaths_second_country)
+        first_case_2 = dates_array[first_info_2]
+
+        # Porcentaje de mortalidad del segundo país.
+        death_rate_2 = (deaths_2 / confirmed_2)*100
+        death_rate_2 = round(death_rate_2, 2)
 
     print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- |'  + '--- --- ' + second_name + ' --- ---' +
           '\n Primer deceso: -------------> '    + str(first_case_1)  + ' |-VS-|-> '       + str(first_case_2) +
@@ -568,7 +597,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
     active_1 = get_active_cases(confirmed_1, recovered_1, deaths_1)
     
     first_info_1 = Tools.get_first_case_index(confirmed_1)
-    last_info  = len(confirmed_1)-1
+    last_info  = len(dates_array)-1
 
     # Ultima información.
     confirmed_cases_1 = confirmed_1[last_info]
@@ -576,13 +605,21 @@ def show_general_vs_country(dates_array, country_1, country_2):
     active_cases_1    = active_1[last_info]
     deaths_cases_1    = deaths_1[last_info] 
 
+    if not deaths_cases_1 == 0:
+        first_death_1 = Tools.get_first_case_index(deaths_1)
+        first_death_1 = dates_array[first_death_1]
+    else:
+        first_death_1 = 'No hay decesos'
+
+    if not reocvered_cases_1 == 0:
+        first_recovered_1 = Tools.get_first_case_index(recovered_1)
+        first_recovered_1 = dates_array[first_recovered_1]
+    else: 
+        first_recovered_1 = 'No hay casos recuperados'
+
     # Primeros eventos.
     first_confirmed_1 = dates_array[first_info_1]
-    first_recovered_1 = Tools.get_first_case_index(recovered_1)
-    first_recovered_1 = dates_array[first_recovered_1]
-    first_deatth_1    = Tools.get_first_case_index(deaths_1)
-    first_deatth_1    = dates_array[first_deatth_1]
-
+    
     # Indices Porcentuales.
     death_rate_1      = Tools.get_country_death_rate(country_1)
     recovered_rate_1  = (reocvered_cases_1 / confirmed_cases_1)*100
@@ -603,13 +640,21 @@ def show_general_vs_country(dates_array, country_1, country_2):
     recovered_cases_2 = recovered_2[last_info]
     active_cases_2    = active_2[last_info]
     deaths_cases_2    = deaths_2[last_info]
-    
+
+    if not deaths_cases_2 == 0:
+        first_death_2 = Tools.get_first_case_index(deaths_2)
+        print()
+        first_death_2 = dates_array[first_death_2]
+    else:
+        first_death_2 = 'No hay decesos'
+
+    if not recovered_cases_2 == 0:
+        first_recovered_2 = Tools.get_first_case_index(recovered_2)
+        first_recovered_2 = dates_array[first_recovered_2]
+    else: 
+        first_recovered_2 = 'No hay casos recuperados'
     # Fechas de primeros eventos.
     first_confirmed_2 = dates_array[first_info_2]
-    first_recovered_2 = Tools.get_first_case_index(recovered_2)
-    first_recovered_2 = dates_array[first_recovered_2]
-    first_deatth_2    = Tools.get_first_case_index(deaths_2)
-    first_deatth_2    = dates_array[first_deatth_2]
 
     # Indices procentuales.
     death_rate_2      = Tools.get_country_death_rate(country_2)
@@ -624,7 +669,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
           '\n Casos activos actualmente: -> {:,}' .format(active_cases_1)       + ' |-VS-|-> {:,}' .format(active_cases_2) +
           '\n Primer caso recuperado: ----> '     + str(first_recovered_1)      + ' |-VS-|-> '     + str(first_recovered_2) +
           '\n Casos recuperados acumulados: {:,}' .format(reocvered_cases_1)    + ' |-VS-|-> {:,}' .format(recovered_cases_2) +
-          '\n Primer caso confirmado: ----> '     + str(first_deatth_1)         + ' |-VS-|-> '     + str(first_deatth_2) +
+          '\n Primer caso confirmado: ----> '     + str(first_death_1)         + ' |-VS-|-> '     + str(first_death_2) +
           '\n Decesos acumulados: --------> {:,}' .format(deaths_cases_1)       + ' |-VS-|-> {:,}' .format(deaths_cases_2) +
           '\n Indice de mortalidad: ------> '     + str(death_rate_1)     + '%' + ' |-VS-|-> '     + str(death_rate_2) + '%' +
           '\n Indice de recuperación: ----> '     + str(recovered_rate_1) + '%' + ' |-VS-|-> '     + str(recovered_rate_2) + '%' +

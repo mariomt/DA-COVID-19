@@ -188,6 +188,8 @@ def get_first_case_index(vector_confirmed):
     for n in vector_confirmed:
         if n == 0:
             index += 1
+        else:
+            break
 
     return index
 
