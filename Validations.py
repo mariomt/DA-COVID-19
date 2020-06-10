@@ -38,4 +38,15 @@ def options_validator(options, option_selected):
     options_validator(options, option_selected)
     
 
+def country_validator(country_name, countrys):
+    country_name = country_name.lower().strip()
+
+    for country in countrys:
+        country = country.lower().strip()
+
+        if country_name in country:
+            print(':) HERE!')
+            break
+        else:
+            print(':(')
 

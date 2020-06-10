@@ -1,4 +1,5 @@
 import Menu_options as menu
+import Tools
 
 print("""    Bienvenido. Aqui puedes consulatr información acerca del COVID-19, como casos confirmados, 
     recuperaciones, decesos y casos activos en el país que gustes consultar, o si lo prefieres, comparar 

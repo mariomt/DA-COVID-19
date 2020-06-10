@@ -165,7 +165,26 @@ def get_vs_general_by_country():
 
     plot.show_general_vs_country(dates, first_country, second_country)
 
-    # wanna_do_something()
+def get_daily_info_by_country():
+    country_name = input('Ingrese el nombre del país que desea consultar: ')
+
+    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+        country_name = country_name.capitalize()
+    
+    confirmed_vector = Tools.get_confirmed_cases(country_name)
+    daily_cases      = Tools.get_daily_info(confirmed_vector)
+    new_dates        = Tools.get_dates_vector()
+
+    plot.show_daily_confirmed_cases(new_dates, daily_cases, country_name)
+
+def test():
+    country_name = input('Ingrese el nombre del país que desea consultar: ')
+    countrys = Tools.show_all_countrys()
+
+    # if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
+    #     country_name = country_name.capitalize()
+
+    Validations.country_validator(country_name, countrys)
 
 def main_menu():
     options_array = []
@@ -186,7 +205,8 @@ def main_menu():
     10 - Comparación de decesos entre 2 paises
     11 - Comparacion de casos activos entre 2 paises
     12 - Grafica de indices de mortalidad
-    13 - Salir""")
+    13 - Grafica de casos confirmados diarios de un país
+    14 - Salir""")
 
         option_selected = input('Seleccione una opción: ')
         return option_selected
@@ -206,7 +226,9 @@ def main_menu():
         '10': get_vs_deaths_cases,
         '11': get_vs_active_cases,
         '12': get_global_death_rates,
-        '13': exit
+        '13': get_daily_info_by_country,
+        '14': exit,
+        '99': test
     }   
 
     option_selected = print_main_menu()

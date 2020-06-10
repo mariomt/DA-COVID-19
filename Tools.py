@@ -182,10 +182,12 @@ def remove_zeros(vector):
 
     return new_vector
 
-def get_first_case_index(vector_confirmed):
+def get_first_case_index(vector):
+    # Devuleve la posición de un arreglo en la que deja de ser cero.
+    # vector: Es un arreglo de enteros. 
     index = 0
 
-    for n in vector_confirmed:
+    for n in vector:
         if n == 0:
             index += 1
         else:
@@ -336,3 +338,22 @@ def get_all_death_rates():
         death_rates[country] = get_country_death_rate(country)
     
     return death_rates
+
+def get_daily_info(vector):
+    daily_info = []
+    size = len(vector)
+
+    for n in range(size):
+        if not n+1 == size-1:
+            daily_info.append( vector[n+1] - vector[n] )
+        else: 
+            break
+
+    return daily_info
+
+def get_average(vector):
+    cases = sum(vector)
+    days = len(vector)
+    average = round(cases / days, 2)
+
+    return average
