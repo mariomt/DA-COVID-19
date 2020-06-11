@@ -1,12 +1,6 @@
 import re
 
 # --- Validaciones ---- #
-def capital_letter(country_name):
-    if not re.search('^[A-Z]', country_name): # Si el nombre del pais no empiza con mayuscula
-        return True
-    else:
-        return False
-
 def file_exists(files_path):
     # Verifica que exista el archivo en la ruta proporsionada.
     # files_path: Es un arreglo de string que contiene rutas de archivos.
@@ -17,17 +11,10 @@ def file_exists(files_path):
         except IOError:
             return False
 
-def check_empty_country_name(country_space):
-    # Verifica que el nombre del paise proporsionado por el usuario no 
-    # este en blanco.
-    # country: Es el nombre del pais porporsionado por el usuario.
-    if not country_space or not country_space.strip():
-        return False
-        print('El campo del pais esta en blanco o no es valido')
-    else:
-        return True
-
 def options_validator(options, option_selected):
+    # Verifica que una opción dada por el usuairo exista en la lista de opciones disponibles.
+    # options: Es un diccionario con las opciones y sus funciones.
+    # option_selected: Es la opción seleccioanda por el usuario.
     for option in options:
         if option_selected == option:
             return options[option_selected]()
@@ -36,17 +23,32 @@ def options_validator(options, option_selected):
     option_selected = input('Revise nuestro menu e intentelo nuevamente: ')
 
     options_validator(options, option_selected)
-    
 
 def country_validator(country_name, countrys):
-    country_name = country_name.lower().strip()
+    # Verifica que exista un país dado por el usuairo en la lista de paises disponibles.
+    # country_name: Es el nombre del país dado por el usuario.
+    # countrys: Es la lista de paises disponibles. 
+    country_name   = country_name.lower().strip()
+    lower_countrys = countrys_to_lower(countrys)
+    flag           = False 
+    msg_error      = country_name + ' no se encuentra en la lista o no esta escrito correctamente.\n Revise nuestra lista paises disponibles. \n' 
+
+    if country_name in lower_countrys:
+        position = lower_countrys.index(country_name)
+        flag = True
+        
+        return countrys[position], flag
+    else:
+        return msg_error, flag
+
+
+def countrys_to_lower(countrys):
+    # Devuleve un arreglo de strings en minusculas.
+    # countrys: Es un arreglo de strings.
+    lower_countrys = []
 
     for country in countrys:
-        country = country.lower().strip()
+        lower_countrys.append(country.lower())
 
-        if country_name in country:
-            print(':) HERE!')
-            break
-        else:
-            print(':(')
+    return lower_countrys
 

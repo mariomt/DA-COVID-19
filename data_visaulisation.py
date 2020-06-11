@@ -47,14 +47,14 @@ def show_all_country_info(dates_array, confirmed_cases, recovered_cases, deaths_
 
     # Imprimiendo información de grafica
     print('\n --- --- ' + country_name + ' --- ---' +
-          '\n Primer caso confirmado: '          + str(dates_array[0]) + 
-          '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
-          '\n Casos activos actualmente: {:,}'   .format(actives) + 
-          '\n Casos recuperados acumulados: {:,}'.format(recovered) + 
-          '\n Decesos acumulados: {:,}'          .format(deaths) + 
-          '\n Indice de mortalidad: '            + str(death_rate) + '%' +
-          '\n Indice de recuperación: '          + str(recovered_rate) + '%' +
-          '\n Indice de casos activos: '         + str(active_rate) + '%')
+          '\n Primer caso confirmado: '           + str(dates_array[0]) + 
+          '\n Casos confirmados acumulados: {:,}' .format(confirmed)    + 
+          '\n Casos activos actualmente: -> {:,}' .format(actives)      + 
+          '\n Casos recuperados acumulados: {:,}' .format(recovered)    + 
+          '\n Decesos acumulados: --------> {:,}' .format(deaths)       + 
+          '\n Indice de mortalidad: ------> '     + str(death_rate)     + '%' +
+          '\n Indice de recuperación: ----> '     + str(recovered_rate) + '%' +
+          '\n Indice de casos activos: ---> '     + str(active_rate)    + '%')
 
     # Graficación de información
     plot.plot(dates_array, confirmed_cases, linestyle='solid', color='red', label='Confirmados')
@@ -184,7 +184,6 @@ def show_country_deaths_cases(dates_array, deaths_cases, country_name):
         dates_array  = dates_array[ first_info:last_info ]
 
         # Información de la ultima fecha.
-        # print(str(len(confirmed)) + ', ' + str(last_info))
         last_info = len(dates_array)-1
         confirmed = confirmed[last_info]
         deaths    = deaths_cases[last_info]
@@ -206,7 +205,7 @@ def show_country_deaths_cases(dates_array, deaths_cases, country_name):
         plot.legend(loc=2)
         plot.gcf().autofmt_xdate()
         plot.gca().xaxis.set_major_formatter(date_format)
-        plot.title('Comportamiento de los decesos por deCOVID-19 en ' + country_name + ' hasta el ' + 
+        plot.title('Comportamiento de los decesos por de COVID-19 en ' + country_name + ' hasta el ' + 
                     str(dates_array[ len(dates_array)-1 ]))
         plot.xlabel('Tiempo')
         plot.ylabel('Numero de decesos')
@@ -232,9 +231,9 @@ def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, dea
     active_rate = round(active_rate, 2)
 
     print('\n --- --- ' + country_name + ' --- ---' +
-          '\n Casos confirmados acumulados: {:,}'.format(confirmed) + 
-          '\n Casos activos actualmente: {:,}'   .format(actives) +
-          '\n Indice de casos activos: '         + str(active_rate) + '%')
+          '\n Casos confirmados acumulados: {:,}' .format(confirmed) + 
+          '\n Casos activos actualmente: -> {:,}' .format(actives) +
+          '\n Indice de casos activos: ---> '     + str(active_rate) + '%')
 
     ax = plot.plot(dates_array, active_cases, linestyle='solid', color='magenta', label='Casos activos')
     f  = zoom_factory(ax, base_scale = scale)
@@ -450,9 +449,9 @@ def show_active_vs_countrys(dates_array, first_name, second_name):
     active_rate_2 = round(active_rate_2, 2)
 
     print('\n--- --- ' + first_name + ' --- ---' + ' | --- VS --- | ' + '--- --- ' + second_name + ' --- ---' +
-          '\n Casos confirmados acumulados: {:,}'.format(num_confirmed_1)  + ' |-VS-|-> {:,}'.format(num_confirmed_2) +
-          '\n Casos activos actualmente: -> {:,}'.format(num_active_1)     + ' |-VS-|-> {:,}'.format(num_active_2) +
-          '\n Indice de casos activos: ---> '    + str(active_rate_1) + '%' + ' |-VS-|-> ' + str(active_rate_2) + '%')
+          '\n Casos confirmados acumulados: {:,}' .format(num_confirmed_1)  + ' |-VS-|-> {:,}' .format(num_confirmed_2) +
+          '\n Casos activos actualmente: -> {:,}' .format(num_active_1)     + ' |-VS-|-> {:,}' .format(num_active_2) +
+          '\n Indice de casos activos: ---> '     + str(active_rate_1) + '%' + ' |-VS-|-> '    + str(active_rate_2) + '%')
 
     plot.plot(dates_array, active_first_country, linestyle='solid', color='magenta', label=first_name)
     ax = plot.plot(dates_array, active_second_country, linestyle='dashed', color='magenta', label=second_name)
@@ -572,12 +571,15 @@ def zoom_factory(ax, base_scale = 2.):
             scale_factor = 1
             # print(event.button)
 
-        # set new limits
-        plot.gca().set_xlim([xdata - (xdata-cur_xlim[0]) / scale_factor, xdata + 
-                             (cur_xlim[1]-xdata) / scale_factor])
-        plot.gca().set_ylim([ydata - (ydata-cur_ylim[0]) / scale_factor, ydata + 
-                             (cur_ylim[1]-ydata) / scale_factor])
-        plot.draw() # force re-draw
+        try:
+            # set new limits
+            plot.gca().set_xlim([xdata - (xdata-cur_xlim[0]) / scale_factor, xdata + 
+                                (cur_xlim[1]-xdata) / scale_factor])
+            plot.gca().set_ylim([ydata - (ydata-cur_ylim[0]) / scale_factor, ydata + 
+                                (cur_ylim[1]-ydata) / scale_factor])
+            plot.draw() # force re-draw
+        except:
+            pass
 
     # attach the call back
     plot.gcf().canvas.mpl_connect('scroll_event', zoom_fun)
@@ -597,7 +599,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
     active_1 = get_active_cases(confirmed_1, recovered_1, deaths_1)
     
     first_info_1 = Tools.get_first_case_index(confirmed_1)
-    last_info  = len(dates_array)-1
+    last_info    = len(dates_array)-1
 
     # Ultima información.
     confirmed_cases_1 = confirmed_1[last_info]
@@ -657,11 +659,11 @@ def show_general_vs_country(dates_array, country_1, country_2):
     first_confirmed_2 = dates_array[first_info_2]
 
     # Indices procentuales.
-    death_rate_2      = Tools.get_country_death_rate(country_2)
-    recovered_rate_2  = (recovered_cases_2 / confirmed_cases_2)*100
-    recovered_rate_2  = round(recovered_rate_2, 2)
-    active_rate_2     = (active_cases_2 / confirmed_cases_2)*100
-    active_rate_2     = round(active_rate_2, 2)
+    death_rate_2     = Tools.get_country_death_rate(country_2)
+    recovered_rate_2 = (recovered_cases_2 / confirmed_cases_2)*100
+    recovered_rate_2 = round(recovered_rate_2, 2)
+    active_rate_2    = (active_cases_2 / confirmed_cases_2)*100
+    active_rate_2    = round(active_rate_2, 2)
     
     print('\n--- --- ' + country_1 + ' --- ---' + ' | --- VS --- |' + '--- --- ' + country_2 + ' --- ---' +
           '\n Primer caso confirmado: ----> '     + str(first_confirmed_1)      + ' |-VS-|-> '     + str(first_confirmed_2) +
@@ -669,7 +671,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
           '\n Casos activos actualmente: -> {:,}' .format(active_cases_1)       + ' |-VS-|-> {:,}' .format(active_cases_2) +
           '\n Primer caso recuperado: ----> '     + str(first_recovered_1)      + ' |-VS-|-> '     + str(first_recovered_2) +
           '\n Casos recuperados acumulados: {:,}' .format(reocvered_cases_1)    + ' |-VS-|-> {:,}' .format(recovered_cases_2) +
-          '\n Primer caso confirmado: ----> '     + str(first_death_1)         + ' |-VS-|-> '     + str(first_death_2) +
+          '\n Primer caso confirmado: ----> '     + str(first_death_1)          + ' |-VS-|-> '     + str(first_death_2) +
           '\n Decesos acumulados: --------> {:,}' .format(deaths_cases_1)       + ' |-VS-|-> {:,}' .format(deaths_cases_2) +
           '\n Indice de mortalidad: ------> '     + str(death_rate_1)     + '%' + ' |-VS-|-> '     + str(death_rate_2) + '%' +
           '\n Indice de recuperación: ----> '     + str(recovered_rate_1) + '%' + ' |-VS-|-> '     + str(recovered_rate_2) + '%' +
@@ -697,6 +699,10 @@ def show_general_vs_country(dates_array, country_1, country_2):
     plot.show()
 
 def show_daily_confirmed_cases(dates_array, daily_confirmed, country_name):
+    # Grafica e imprime los casos confirmados diariamente de un pais.
+    # dates_array: Es un vector de fechas de tipo date.
+    # daily_confirmed: Es un arreglo de enteros con los casos confirmados diariamente.
+    # country_name: Es el nombre del país.
     if len(dates_array) > len(daily_confirmed):
         dates_array.pop(0)    
         last_element = len(dates_array)-1
@@ -721,5 +727,3 @@ def show_daily_confirmed_cases(dates_array, daily_confirmed, country_name):
     plot.tight_layout()
     plot.show()
     
-
-

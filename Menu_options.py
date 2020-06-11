@@ -1,132 +1,171 @@
+import os
 import sys
 import Tools
 import Validations
 import Data_visaulisation as plot
 
-dates = Tools.get_dates_vector()
+# Variables globales
+dates    = Tools.get_dates_vector()
+countrys = Tools.show_all_countrys()
+msg_vs_error = 'no se encuentran en la lista o no estan escritos correctamente.\n Revise nuestra lista paises disponibles.'
+
+def show_info():
+    # Imprime la información del sistema.
+    print("""    Bienvenido. Aqui puedes consulatr información acerca del COVID-19, como casos confirmados, 
+        recuperaciones, decesos y casos activos en el país que gustes consultar, o si lo prefieres, comparar 
+        la información entre 2 paises. Este programa se alimenta de la información proporsionada y recolectada 
+        por the Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) de diversas 
+        fuentes como the World Health Organization (WHO), DXY.cn, BNO News, National Health Commission of the 
+        People’s Republic of China (NHC), China CDC (CCDC), Hong Kong Department of Health, Macau Government, 
+        Taiwan CDC, US CDC, Government of Canada, Australia Government Department of Health, European Centre 
+        for Disease Prevention and Control (ECDC), Ministry of Health Singapore (MOH), entre otros.
+
+        Puedes consultar las fuentes en github: 
+        https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_daily_reports 
+        o en el sitio web: https://data.humdata.org/dataset/novel-coronavirus-2019-ncov-cases \n""")
 
 def get_all_info_by_country():
     # Grafica y muestra toda la información de los casos recuperados, confirmados y decesos de un pais.
     country_name = input('Ingrese el nombre del pais que desea consultar: ')
 
+    country_name, flag = Validations.country_validator(country_name, countrys)
+
     # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()
+    if flag: 
+        raw_confirmed, raw_recovered, raw_deaths       = Tools.get_info_by_country_name(country_name)
+        confirmed_cases, recovered_cases, deaths_cases = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
 
-    raw_confirmed, raw_recovered, raw_deaths       = Tools.get_info_by_country_name(country_name)
-    confirmed_cases, recovered_cases, deaths_cases = Tools.get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths)
-
-    plot.show_all_country_info(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+        plot.show_all_country_info(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
 
 def get_confirmed_cases_by_country():
     # Grafica y muestra solo la información de los casos confirmados de un país.
     country_name = input('Ingrese el nombre del pais que desea consultar: ')
 
+    country_name, flag = Validations.country_validator(country_name, countrys)
+
     # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()    
+    if flag: 
+        confirmed_cases = Tools.get_confirmed_cases(country_name)
 
-    confirmed_cases = Tools.get_confirmed_cases(country_name)
-
-    plot.show_country_confirmed_cases(dates, confirmed_cases, country_name)
-
+        plot.show_country_confirmed_cases(dates, confirmed_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
+        
 def get_recovered_cases_by_country():
     # Grafica y muestra solo los casos recuperados de un país.
     country_name = input('Ingrese el nombre del pais que desea consultar: ')
 
-    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()    
+    country_name, flag = Validations.country_validator(country_name, countrys)
 
-    recovered_cases = Tools.get_recovered_cases(country_name)
-    plot.show_country_recovered_cases(dates, recovered_cases, country_name)
-    
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if flag: 
+        recovered_cases = Tools.get_recovered_cases(country_name)
+        plot.show_country_recovered_cases(dates, recovered_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
+
 def get_deaths_cases_by_country():
     # Grafica y muyestra solo los decesos de un país.
     country_name = input('Ingrese el nombre del pais que desea consultar: ')
 
-    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()    
+    country_name, flag = Validations.country_validator(country_name, countrys)
 
-    deaths_cases = Tools.get_deaths_cases(country_name)
-    plot.show_country_deaths_cases(dates, deaths_cases, country_name)
+    # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
+    if flag:    
+        deaths_cases = Tools.get_deaths_cases(country_name)
+        plot.show_country_deaths_cases(dates, deaths_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
 
 def get_active_cases_by_country():
     # Grafica y muestra solo los casos activos de un país.
     country_name = input('Ingrese el nombre del pais que desea consultar: ')
 
+    country_name, flag = Validations.country_validator(country_name, countrys)
+
     # Si el nombre del pais no empiza con mayuscula o el campo esta vacio
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()    
+    if flag:
+        confirmed_cases, recovered_cases, deaths_cases = Tools.get_info_by_country_name(country_name)
 
-    confirmed_cases, recovered_cases, deaths_cases = Tools.get_info_by_country_name(country_name)
-    confirmed_cases                                = Tools.clear_vector(confirmed_cases)
-    recovered_cases                                = Tools.clear_vector(recovered_cases)
-    deaths_cases                                   = Tools.clear_vector(deaths_cases)
+        confirmed_cases = Tools.clear_vector(confirmed_cases)
+        recovered_cases = Tools.clear_vector(recovered_cases)
+        deaths_cases    = Tools.clear_vector(deaths_cases)
 
-    plot.show_country_active_cases(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+        plot.show_country_active_cases(dates, confirmed_cases, recovered_cases, deaths_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
 
 def get_vs_confirmed_cases():
     # Grafica y muestra una comparación entre ls casos conformados de 2 paises.
-    first_country = input('Ingrese el primer país: ')
+    first_country  = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
-    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
-        first_country = first_country.capitalize()
+    first_country, flag_1   = Validations.country_validator(first_country, countrys)
+    second_country, flag_2 = Validations.country_validator(second_country, countrys)
 
-    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
-        second_country = second_country.capitalize()
-    
-    confirmed_first_country = Tools.get_confirmed_cases(first_country)
-    confirmed_second_country = Tools.get_confirmed_cases(second_country)
+    if flag_1 and flag_2: 
+        confirmed_first_country  = Tools.get_confirmed_cases(first_country)
+        confirmed_second_country = Tools.get_confirmed_cases(second_country)
 
-    plot.show_confirmed_vs_countrys(dates, confirmed_first_country, confirmed_second_country, first_country, second_country)
+        plot.show_confirmed_vs_countrys(dates, confirmed_first_country, confirmed_second_country, first_country, second_country)
+    else:
+        print(first_country + ' o ' + second_country + ' ' + msg_vs_error)
+        wanna_do_something()
 
 def get_vs_recovered_cases():
     # Grafica y muestra una comparación entre los casos recuperados de 2 paises.
-    first_country = input('Ingrese el primer país: ')
+    first_country  = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
-    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
-        first_country = first_country.capitalize()
+    first_country, flag_1  = Validations.country_validator(first_country, countrys)
+    second_country, flag_2 = Validations.country_validator(second_country, countrys)
 
-    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
-        second_country = second_country.capitalize()
+    if flag_1 and flag_2: 
+        recovered_first_country  = Tools.get_recovered_cases(first_country)
+        recovered_second_country = Tools.get_recovered_cases(second_country)
 
-    recovered_first_country  = Tools.get_recovered_cases(first_country)
-    recovered_second_country = Tools.get_recovered_cases(second_country)
-
-    plot.show_recovered_vs_countrys(dates, recovered_first_country, recovered_second_country, first_country, second_country)
+        plot.show_recovered_vs_countrys(dates, recovered_first_country, recovered_second_country, first_country, second_country)
+    else: 
+        print(first_country + ' o ' + second_country + ' ' + msg_vs_error)
+        wanna_do_something()
 
 def get_vs_deaths_cases():
     # Grafica y muestra una comparación de entre los decesos de 2 paises.
-    first_country = input('Ingrese el primer país: ')
+    first_country  = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
-    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
-        first_country = first_country.capitalize()
+    first_country, flag_1  = Validations.country_validator(first_country, countrys)
+    second_country, flag_2 = Validations.country_validator(second_country, countrys)
 
-    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
-        second_country = second_country.capitalize()
+    if flag_1 and flag_2: 
+        deaths_first_country   = Tools.get_deaths_cases(first_country)
+        deaths_seacond_country = Tools.get_deaths_cases(second_country)
 
-    deaths_first_country   = Tools.get_deaths_cases(first_country)
-    deaths_seacond_country = Tools.get_deaths_cases(second_country)
-
-    plot.show_deaths_vs_countrys(dates, deaths_first_country, deaths_seacond_country, first_country, second_country)
-
+        plot.show_deaths_vs_countrys(dates, deaths_first_country, deaths_seacond_country, first_country, second_country)
+    else:
+        print(first_country + ' o ' + second_country + ' ' + msg_vs_error)
+        wanna_do_something()
+    
 def get_vs_active_cases():
     # Grafica y muestra una comparación entre los casos a0ctivos entre 2 paises.
-    first_country = input('Ingrese el primer país: ')
+    first_country  = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
-    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
-        first_country = first_country.capitalize()
+    first_country, flag_1  = Validations.country_validator(first_country, countrys)
+    second_country, flag_2 = Validations.country_validator(second_country, countrys) 
 
-    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
-        second_country = second_country.capitalize()
-
-    plot.show_active_vs_countrys(dates, first_country, second_country)
+    if flag_1 and flag_2: 
+        plot.show_active_vs_countrys(dates, first_country, second_country)
+    else:
+        print(first_country + ' o ' + second_country + ' ' + msg_vs_error)
+        wanna_do_something()
 
 def get_all_countrys(): 
     # Imprime una lista de todos los paises disponibles en la base de datos.
@@ -136,7 +175,6 @@ def get_all_countrys():
     for country in countrys:
         print(country)
 
-
 def get_global_info():
     # Grafica y muestra la información.
     all_confirmed_cases, all_recovered_cases, all_deaths_cases = Tools.global_info()
@@ -144,8 +182,15 @@ def get_global_info():
 
 def exit():
     # Sale del programa
+    clear()
     print('bye')
     sys.exit()
+
+def clear():
+    # Limpia la terminal de comandos.
+    clear = lambda: os.system('cls')
+
+    return clear()
 
 def get_global_death_rates():
     # Grafica los indices de mortalidad de cada país en una grafica de barras.
@@ -154,39 +199,36 @@ def get_global_death_rates():
 
 def get_vs_general_by_country():
     # Grafica e imprime la información del estado general entre 2 paises.
-    first_country = input('Ingrese el primer país: ')
+    first_country  = input('Ingrese el primer país: ')
     second_country = input('Ingrese el segundo país: ')
 
-    if Validations.capital_letter(first_country) and Validations.check_empty_country_name(first_country): 
-        first_country = first_country.capitalize()
+    first_country, flag_1  = Validations.country_validator(first_country, countrys)
+    second_country, flag_2 = Validations.country_validator(second_country, countrys)
 
-    if Validations.capital_letter(second_country) and Validations.check_empty_country_name(second_country): 
-        second_country = second_country.capitalize()
-
-    plot.show_general_vs_country(dates, first_country, second_country)
+    if flag_1 and flag_2: 
+        plot.show_general_vs_country(dates, first_country, second_country)
+    else:
+        print(first_country + ' o ' + second_country + ' ' + msg_vs_error)
+        wanna_do_something()
 
 def get_daily_info_by_country():
+    # Grafica e imprime la información de los casos confirmados diarios de un país.
     country_name = input('Ingrese el nombre del país que desea consultar: ')
-
-    if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-        country_name = country_name.capitalize()
     
-    confirmed_vector = Tools.get_confirmed_cases(country_name)
-    daily_cases      = Tools.get_daily_info(confirmed_vector)
-    new_dates        = Tools.get_dates_vector()
+    country_name, flag = Validations.country_validator(country_name, countrys)
 
-    plot.show_daily_confirmed_cases(new_dates, daily_cases, country_name)
+    if flag: 
+        confirmed_vector = Tools.get_confirmed_cases(country_name)
+        daily_cases      = Tools.get_daily_info(confirmed_vector)
+        new_dates        = Tools.get_dates_vector()
 
-def test():
-    country_name = input('Ingrese el nombre del país que desea consultar: ')
-    countrys = Tools.show_all_countrys()
-
-    # if Validations.capital_letter(country_name) and Validations.check_empty_country_name(country_name): 
-    #     country_name = country_name.capitalize()
-
-    Validations.country_validator(country_name, countrys)
+        plot.show_daily_confirmed_cases(new_dates, daily_cases, country_name)
+    else:
+        print(country_name)
+        wanna_do_something()
 
 def main_menu():
+    # Opciones del menu principal.
     options_array = []
 
     def print_main_menu():
@@ -206,7 +248,9 @@ def main_menu():
     11 - Comparacion de casos activos entre 2 paises
     12 - Grafica de indices de mortalidad
     13 - Grafica de casos confirmados diarios de un país
-    14 - Salir""")
+    14 - Información del programa
+    15 - Limpir la terminal
+    16 - Salir""")
 
         option_selected = input('Seleccione una opción: ')
         return option_selected
@@ -227,27 +271,35 @@ def main_menu():
         '11': get_vs_active_cases,
         '12': get_global_death_rates,
         '13': get_daily_info_by_country,
-        '14': exit,
-        '99': test
+        '14': show_info,
+        '15': clear,
+        '16': exit
     }   
 
     option_selected = print_main_menu()
 
-    if option_selected == '0':
+    if option_selected == '0': # Mostrar los paises
         options[option_selected]()
         main_menu()
+    elif option_selected == '14': # Mostrar información del sistema
+        clear()
+        options[option_selected]()
     else:
         Validations.options_validator(options, option_selected)
         
     wanna_do_something()
 
 def wanna_do_something():
+    # Permite la continuidad del sistema hasta que el usuairo eliga salir.
     option_selected = input('¿Deseas realizar otra consulta? | 0 - No | 1 - Si |\n')
 
     if option_selected == '0':
         exit()
     elif option_selected == '1':
+        clear()
         main_menu()
     else:
+        clear()
         print('Opción invalida.')
         wanna_do_something()
+

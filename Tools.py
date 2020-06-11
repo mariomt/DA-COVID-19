@@ -340,6 +340,8 @@ def get_all_death_rates():
     return death_rates
 
 def get_daily_info(vector):
+    # Devuelve un arreglo de enteros con la información de casos diarios de un arreglo dado.
+    # vector: Es un arreglo de enteros
     daily_info = []
     size = len(vector)
 
@@ -352,6 +354,8 @@ def get_daily_info(vector):
     return daily_info
 
 def get_average(vector):
+    # Devuelve el promedio de un vector de enteros.
+    # vector: Es un arreglo de enteros
     cases = sum(vector)
     days = len(vector)
     average = round(cases / days, 2)
