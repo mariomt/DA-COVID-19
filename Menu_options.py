@@ -2,7 +2,7 @@ import os
 import sys
 import Tools
 import Validations
-import Data_visaulisation as plot
+import data_visaulisation as plot
 
 # Variables globales
 dates    = Tools.get_dates_vector()
