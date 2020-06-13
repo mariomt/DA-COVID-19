@@ -5,6 +5,7 @@ Este es un programa diseñado para la visualización de información hacer del n
 en el cual podrás consultar información individual sobre casos específicos en distintos países o información 
 global, con la seguridad de estar consultando resultados de fuentes confiables.
 
+----------
 ##FUENTES
 
 Este software es alimentado por 3 archivos `.csv`que contienen la información en bruto sobre los casos confirmados, 
@@ -27,5 +28,16 @@ Ingeniería de Sistemas (JHU CCSE por sus siglas en ingles) de varias fuentes pr
 > - **Centro Europeo para la Prevención y Control de Enfermedades (ECDC)**
 > - **Ministerio de Salud de Singapur (MOH)**
 
-----------
-La Universidad Johns Hopkins mantiene la información publica en su repositorio de Github, al cual puedes acceder [dando click aquí](https://github.com/CSSEGISandData/COVID-19)
+
+La Universidad Johns Hopkins mantiene la información publica en su repositorio de Github, al cual puedes acceder 
+[dando click aquí](https://github.com/CSSEGISandData/COVID-19)
+
+-------------
+
+##METODO DE EJECUCIÓN
+
+> **Pasos**
+
+> **1 - ** Clonar el repositorio.
+> **2 - ** Abrir la terminal de comando en la ruta donde se haya guardado el repositorio.
+> **3 - ** Ejecutar el comando `py Main.py`.
