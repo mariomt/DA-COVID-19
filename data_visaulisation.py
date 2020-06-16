@@ -250,7 +250,7 @@ def show_country_active_cases(dates_array, confirmed_cases, recovered_cases, dea
     plot.show()
 
 def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_second_country, first_name, second_name):
-    # Grafica y muestra una comparación entre ls casos conformados de 2 paises.
+    # Grafica y muestra una comparación entre ls casos conformados de 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # confirmed_first_country: Es un arreglo de enteros con los casos conformados del primer país.
     # confirmed_second_country: Es un arreglo de enteros con los casos conformados del segundo país.
@@ -288,7 +288,7 @@ def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_s
     plot.show()
 
 def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_second_country, first_name, second_name):
-    # Grafica y muestra una comparación entre los casos recuperados de 2 paises.
+    # Grafica y muestra una comparación entre los casos recuperados de 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # recovered_first_country: Es un arreglo de enteros con los casos recuperados del primer país.
     # recovered_second_country: Es un arreglo de enteros con los casos recuperados del segundo país.
@@ -350,7 +350,7 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
     plot.show()
 
 def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_country, first_name, second_name):
-    # Grafica y muestra una comparación de entre los decesos de 2 paises.
+    # Grafica y muestra una comparación de entre los decesos de 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # deaths_first_country: Es un arreglo de enteros con los decesos del primer país.
     # deaths_second_country: Es un arreglo de enteros con los decesos del segundo país.
@@ -414,11 +414,11 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
     plot.show()
 
 def show_active_vs_countrys(dates_array, first_name, second_name):
-    # Grafica y muestra una comparación entre los casos a0ctivos entre 2 paises.
+    # Grafica y muestra una comparación entre los casos a0ctivos entre 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # first_name: Es el nombre del primer país.
     # second_name: Es el nombre del segundo país.
-    # Obteniendo los daros de los casos confirmados, recuperados y decesos de ambos paises.
+    # Obteniendo los daros de los casos confirmados, recuperados y decesos de ambos países.
     first_confirmed, first_recovered, first_deaths    = Tools.get_info_by_country_name(first_name)
     first_confirmed, first_recovered, first_deaths    = Tools.get_clear_vector_info(first_confirmed, first_recovered, first_deaths)
     second_confirmed, second_recovered, second_deaths = Tools.get_info_by_country_name(second_name)
@@ -519,7 +519,7 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     plot.show()
 
 def show_martality_bars(dict_death_rates):
-    # Muestra una grafica de barras con la información porcental de mortalidad de todos los paises
+    # Muestra una grafica de barras con la información porcental de mortalidad de todos los países
     # en orden asendente. 
     # dict_death_rates: es un diccionario con el nombre del pais y su respectivo indice de mortalidad
     dict_death_rates = sorted(dict_death_rates.items(), key=lambda country: country[1], reverse=True)
@@ -588,7 +588,7 @@ def zoom_factory(ax, base_scale = 2.):
     return zoom_fun
             
 def show_general_vs_country(dates_array, country_1, country_2):
-    # Grafica e imprime la información del estado general entre 2 paises.
+    # Grafica e imprime la información del estado general entre 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # country_1: Es el nombre del primer país.
     # country_2: Es el nombre del segundo país.

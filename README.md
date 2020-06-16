@@ -36,6 +36,12 @@ La Universidad Johns Hopkins mantiene la información publica en su repositorio 
 
 ##METODO DE EJECUCIÓN
 
+> **NOTA:** Este sistema utiliza el modulo **matplotlib**, si no cuentas con este modulo instalado tendras 
+> tendras problemas al ejecutar este software. 
+> Si aun no puentas con matplotlib puedes instalarlo mediante **PIP** entrando a la ruta `C:\Users\Your 
+> Name\AppData\Local\Programs\Python\Python36-32\Scripts>` y ejecutando el comanod `pip install matplotlib`.
+> Si no cuentas con PIP instalado en tu ordenador puedes descargarlo e instalarlo en su sitio oficial[dando click aquí](https://pypi.org/project/pip/)
+
 > **Pasos**
 
 > **1 - ** Clonar el repositorio.

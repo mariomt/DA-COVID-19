@@ -139,7 +139,7 @@ def add_matrix_to_vector(int_dates_cases):
     return summed_vector
 
 def show_all_countrys():
-    # Devulve una lista de todos los paises disponibles para consultar.
+    # Devulve una lista de todos los países disponibles para consultar.
     if Validations.file_exists([confirmed_cases_path]): # Si el archivo existe en la ruta
         with open(confirmed_cases_path, 'r') as confirmed_cases:
             reader        = csv.reader(confirmed_cases)
@@ -279,7 +279,7 @@ def get_deaths_cases(country_name):
     return deaths_cases
 
 def global_info():
-    # Devuleve 3 arreglos (casos confirmados, recuperados y decesos) de enteros con la información de todos los paises del dataset.
+    # Devuleve 3 arreglos (casos confirmados, recuperados y decesos) de enteros con la información de todos los países del dataset.
     all_confirmed_cases = []
     all_recovered_cases = []
     all_deaths_cases    = []
@@ -330,7 +330,7 @@ def get_country_death_rate(country_name):
 
 def get_all_death_rates():
     # Devuleve un diccionario (o un arreglo en formato nombre:valor) con los idnices porcentuales
-    # de mortalidad de todos los paises. 
+    # de mortalidad de todos los países. 
     death_rates = {}
     countrys    = show_all_countrys()
 
