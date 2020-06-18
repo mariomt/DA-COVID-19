@@ -2,6 +2,7 @@
 
 # LocalModules
 from tools.validations import countrys_to_lower
+from tools.tools import clear_vector
 from tools.reader import Reader
 import config
 
@@ -46,13 +47,12 @@ class Country(object):
     def country_validation(name):
         country_name = name.lower().strip()
         lower_countrys = countrys_to_lower(Country.countries)
-        msg_error = country_name + ' no se encuentra en la lista o no esta escrito correctamente.\n Revise nuestra lista países disponibles. \n' 
 
         if country_name in lower_countrys:
             position = lower_countrys.index(country_name)
             return Country.countries[position]
         else:
-            raise Exception('The country "{}" was not found.'.format(country_name))
+            raise NotFoundError('The country "{}" was not found.'.format(name))
 
     @staticmethod
     def show_all_names():
@@ -63,6 +63,62 @@ class Country(object):
     def get_confirmed_cases(self):
         """Return the confirmed cases."""
         pass
+
+    def get_data_info(self):
+    # Devuelve 3 arreglos (casos confirmados, recuperados y decesos) de tipo string con la 
+    # información completa de un pais dado.
+    # country: Es el nombre de un pais dado por el usuario (string).
+        reader = Reader()
+        raw_confirmed_cases = reader.get_country_rows(config.CONFIRMED_CASES_PATH, self.name)
+        raw_recovered_cases = reader.get_country_rows(config.RECOVERED_CASES_PATH, self.name)
+        raw_deaths_cases = reader.get_country_rows(config.DEATHS_CASES_PATH, self.name)
+        return raw_confirmed_cases, raw_recovered_cases, raw_deaths_cases
+
+    def get_confirmed_cases(self):
+    # Devuleve un arreglo de enteros que contiene la información sobre los casos confirmados de un país.
+    # country_name: Es el nombre del pais.
+        def callback(reader, args):
+            data = []
+            for row in reader:
+                if row[config.COUNTRY_COLUMN] == self.name:
+                    data.append(row)
+            return data
+
+        reader = Reader()
+        confirmed_cases = reader.read_file(config.CONFIRMED_CASES_PATH, callback)
+        confirmed_cases = clear_vector(confirmed_cases, reader)
+        return confirmed_cases
+
+    def get_recovered_cases(self):
+    # Devuelve un arreglo de enteros con la información de los casos recuperados de un país.
+    # country_name: Es el nomnre del país.
+        def callback(reader, args):
+            data = []
+            for row in reader:
+                if row[config.COUNTRY_COLUMN] == self.name:
+                    data.append(row)
+            return data
+
+        reader = Reader()
+        recovered_cases = reader.read_file(config.RECOVERED_CASES_PATH,callback)
+        recovered_cases = clear_vector(recovered_cases, reader)
+
+        return recovered_cases
+
+    def get_deaths_cases(self):
+    # Devuelve un arreglo de enteros con la información de los decesos de un país.
+    # country_name: Es el nombre del país.
+        def callback(reader, args):
+            data = []
+            for row in reader:
+                if row[config.COUNTRY_COLUMN] == self.name:
+                    data.append(row)
+            return data
+
+        reader = Reader()
+        deaths_cases = reader.read_file(config.DEATHS_CASES_PATH, callback)
+        deaths_cases = clear_vector(deaths_cases, reader)
+        return deaths_cases
 
 
     def str_format(self):
@@ -87,3 +143,6 @@ Indice de casos activos: ---> {}%""".format(
                 self.active_infection_rate
             )
 
+
+class NotFoundError(Exception):
+    pass

@@ -15,6 +15,7 @@ def options_validator(options, option_selected):
 
     options_validator(options, option_selected)
 
+## delete
 def country_validator(country_name, countrys):
     # Verifica que exista un país dado por el usuairo en la lista de países disponibles.
     # country_name: Es el nombre del país dado por el usuario.

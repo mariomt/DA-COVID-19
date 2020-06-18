@@ -58,16 +58,6 @@ class Reader(object):
         func = lambda reader, args : next(reader)
         return self.read_file(file, func)
 
-    def get_info_by_country_name(self, country):
-    # Devuelve 3 arreglos (casos confirmados, recuperados y decesos) de tipo string con la 
-    # información completa de un pais dado.
-    # country: Es el nombre de un pais dado por el usuario (string).
-
-        raw_confirmed_cases = self.get_country_rows(config.CONFIRMED_CASES_PATH, country)
-        raw_recovered_cases = self.get_country_rows(config.RECOVERED_CASES_PATH, country)
-        raw_deaths_cases = self.get_country_rows(config.DEATHS_CASES_PATH, country)
-        return raw_confirmed_cases, raw_recovered_cases, raw_deaths_cases
-
     
     def global_info(self):
         # Devuleve 3 arreglos (casos confirmados, recuperados y decesos) de enteros con la información de todos los países del dataset.
@@ -86,52 +76,6 @@ class Reader(object):
         all_confirmed_cases, all_recovered_cases, all_deaths_cases = get_clear_vector_info(all_confirmed_cases, all_recovered_cases, all_deaths_cases, self)
         
         return all_confirmed_cases, all_recovered_cases, all_deaths_cases
-
-
-    def get_recovered_cases(self, country_name):
-    # Devuelve un arreglo de enteros con la información de los casos recuperados de un país.
-    # country_name: Es el nomnre del país.
-        def callback(reader, args):
-            data = []
-            for row in reader:
-                if row[config.COUNTRY_COLUMN] == country_name:
-                    data.append(row)
-            return data
-
-        recovered_cases = self.read_file(config.RECOVERED_CASES_PATH,callback)
-
-        recovered_cases = clear_vector(config.RECOVERED_CASES_PATH, self)
-        return recovered_cases
-
-    def get_confirmed_cases(self, country_name):
-    # Devuleve un arreglo de enteros que contiene la información sobre los casos confirmados de un país.
-    # country_name: Es el nombre del pais.
-        def callback(reader, args):
-            data = []
-            for row in reader:
-                if row[config.COUNTRY_COLUMN] == country_name:
-                    data.append(row)
-            return data
-
-        confirmed_cases = self.read_file(config.CONFIRMED_CASES_PATH, callback)
-        confirmed_cases = clear_vector(config.CONFIRMED_CASES_PATH, self)
-        return confirmed_cases
-                
-
-    def get_deaths_cases(self, country_name):
-    # Devuelve un arreglo de enteros con la información de los decesos de un país.
-    # country_name: Es el nombre del país.
-        def callback(reader, args):
-            data = []
-            for row in reader:
-                if row[config.COUNTRY_COLUMN] == country_name:
-                    data.append(row)
-            return data
-
-        deaths_cases = self.read_file(config.DEATHS_CASES_PATH, callback)
-
-        deaths_cases = clear_vector(deaths_cases, self)
-        return deaths_cases
 
     @staticmethod
     def file_exists(files_path):

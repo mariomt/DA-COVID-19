@@ -47,6 +47,26 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths, reader):
 
     return confirmed_cases, recovered_cases, deaths_cases
 
+def clear_vector(raw_array, reader):
+    # Devuleve un arreglo de enteros con la información correspondiente a las fechas.
+    # raw_array: Es un arreglo de string con toda la información de un pais.
+    column_names            = reader.get_first_row(config.CONFIRMED_CASES_PATH)
+    first_index, last_index = get_range_dates(column_names)
+    clear_vector            = []
+
+    for vector in raw_array:
+        clear_vector.append(vector[ first_index:last_index ])
+
+    clear_vector = convert_to_int(clear_vector)
+
+    if len(raw_array) > 1:
+        clear_vector = add_matrix_to_vector(clear_vector)
+
+    if len(clear_vector) == 1:
+        clear_vector = clear_vector[0]
+
+    return clear_vector
+
 def get_range_dates(array_column_names):
     # Verifica si el nombre de la columna es una fecha.
     # array_column_names: Es un arreglo con los nombres de las clumnas 
@@ -118,25 +138,7 @@ def get_first_case_index(vector):
     return index
 
 
-def clear_vector(raw_array, reader):
-    # Devuleve un arreglo de enteros con la información correspondiente a las fechas.
-    # raw_array: Es un arreglo de string con toda la información de un pais.
-    column_names            = reader.get_first_row(config.CONFIRMED_CASES_PATH)
-    first_index, last_index = get_range_dates(column_names)
-    clear_vector            = []
 
-    for vector in raw_array:
-        clear_vector.append(vector[ first_index:last_index ])
-
-    clear_vector = convert_to_int(clear_vector)
-
-    if len(raw_array) > 1:
-        clear_vector = add_matrix_to_vector(clear_vector)
-
-    if len(clear_vector) == 1:
-        clear_vector = clear_vector[0]
-
-    return clear_vector
 
 def get_dates_vector(reader):
     # Devuelve un arreglo de fechas en formato date correpondiente a todas las fechas comprendidas en el dataset.
@@ -149,11 +151,11 @@ def get_dates_vector(reader):
 
 
 
-def get_country_death_rate(country_name, reader):
+def get_country_death_rate(country, reader):
     # Devuleve el indice porcentual de mortalidad de un país dado.
     # country_name: Es el nombre del país. 
-    confirmed = reader.get_confirmed_cases(country_name)
-    deaths    = reader.get_deaths_cases(country_name)
+    confirmed = country.get_confirmed_cases()
+    deaths    = country.get_deaths_cases()
     
     last_info_column = len(confirmed)-1
 
@@ -165,13 +167,14 @@ def get_country_death_rate(country_name, reader):
 
     return death_rate
 
-def get_all_death_rates(countries, reader):
+def get_all_death_rates(countries, Country ,reader):
     # Devuleve un diccionario (o un arreglo en formato nombre:valor) con los idnices porcentuales
     # de mortalidad de todos los países. 
     death_rates = {}
 
     for country in countries:
-        death_rates[country] = get_country_death_rate(country, reader)
+        objCountry = Country(country)
+        death_rates[country] = get_country_death_rate(objCountry, reader)
     
     return death_rates
 
