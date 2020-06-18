@@ -1,15 +1,6 @@
 import re
 
 # --- Validaciones ---- #
-def file_exists(files_path):
-    # Verifica que exista el archivo en la ruta proporsionada.
-    # files_path: Es un arreglo de string que contiene rutas de archivos.
-    for file in files_path:
-        try:
-            open(file, 'r')
-            return True
-        except IOError:
-            return False
 
 def options_validator(options, option_selected):
     # Verifica que una opción dada por el usuairo exista en la lista de opciones disponibles.

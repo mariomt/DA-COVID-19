@@ -1,7 +1,7 @@
 """Country models."""
 
 # LocalModules
-from Validations import countrys_to_lower
+from tools.validations import countrys_to_lower
 from tools.reader import Reader
 
 confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'

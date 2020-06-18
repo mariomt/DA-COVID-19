@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plot
 from matplotlib import dates as plot_dates
 from datetime import date
-import Tools
+import tools.tools as Tools
 
 # Variables globales
 scale       = 1.1
@@ -120,12 +120,12 @@ def show_country_confirmed_cases(dates_array, confirmed_cases, country_name):
     plot.tight_layout()
     plot.show()
 
-def show_country_recovered_cases(dates_array, recovered_cases, country_name):
+def show_country_recovered_cases(dates_array, recovered_cases, country_name, reader):
     # Grafica y muestra solo los casos recuperados de un país.
     # dates_array: Es un arreglo de fehcas de tipo date.
     # recovered_cases: Es un arreglo de enteros con la información de los casos recuperados de un país.
     # country_name: Es el nombre del país. 
-    confirmed  = Tools.get_confirmed_cases(country_name)
+    confirmed  = reader.get_confirmed_cases(country_name)
     first_info = Tools.get_first_case_index(recovered_cases)
     last_info  = len(dates_array)
 
@@ -167,12 +167,12 @@ def show_country_recovered_cases(dates_array, recovered_cases, country_name):
     plot.tight_layout()
     plot.show()
 
-def show_country_deaths_cases(dates_array, deaths_cases, country_name):
+def show_country_deaths_cases(dates_array, deaths_cases, country_name, reader):
     # Grafica y muestra solo los decesos de un país.
     # dates_array: Es un arreglo de fehcas de tipo date.
     # deaths_cases: Es un arreglo de enteros con la información de los decesos de un país.
     # country_name: Es el nombre del país. 
-    confirmed  = Tools.get_confirmed_cases(country_name)
+    confirmed  = reader.get_confirmed_cases(country_name)
     last_info  = len(dates_array)
     first_info = Tools.get_first_case_index(deaths_cases)
 
@@ -287,7 +287,7 @@ def show_confirmed_vs_countrys(dates_array, confirmed_first_country, confirmed_s
     plot.tight_layout()
     plot.show()
 
-def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_second_country, first_name, second_name):
+def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_second_country, first_name, second_name, reader):
     # Grafica y muestra una comparación entre los casos recuperados de 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # recovered_first_country: Es un arreglo de enteros con los casos recuperados del primer país.
@@ -298,7 +298,7 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
 
     # Primer país
     # Información de la ultima fecha del primer país.
-    confirmed_1  = Tools.get_confirmed_cases(first_name)
+    confirmed_1  = reader.get_confirmed_cases(first_name)
     confirmed_1  = confirmed_1[current_info]
     recovered_1  = recovered_first_country[current_info]
     first_info_1 = Tools.get_first_case_index(recovered_first_country)
@@ -314,7 +314,7 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
 
     # Segundo país
     # Información de la ulitma fecha del segundo país.
-    confirmed_2  = Tools.get_confirmed_cases(second_name)
+    confirmed_2  = reader.get_confirmed_cases(second_name)
     confirmed_2  = confirmed_2[current_info]
     recovered_2  = recovered_second_country[current_info]
     first_info_2 = Tools.get_first_case_index(recovered_second_country)
@@ -349,7 +349,7 @@ def show_recovered_vs_countrys(dates_array, recovered_first_country, recovered_s
     plot.tight_layout()
     plot.show()
 
-def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_country, first_name, second_name):
+def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_country, first_name, second_name, reader):
     # Grafica y muestra una comparación de entre los decesos de 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # deaths_first_country: Es un arreglo de enteros con los decesos del primer país.
@@ -360,7 +360,7 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
 
     # Primer país
     # Información de la ultima fecha del primer país.
-    confirmed_1 = Tools.get_confirmed_cases(first_name)
+    confirmed_1 = reader.get_confirmed_cases(first_name)
     confirmed_1 = confirmed_1[current_info]
     deaths_1    = deaths_first_country[current_info]
 
@@ -377,7 +377,7 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
 
     # Segundo país
     # Información de la ultima fehca del primer país.
-    confirmed_2 = Tools.get_confirmed_cases(second_name)
+    confirmed_2 = reader.get_confirmed_cases(second_name)
     confirmed_2 = confirmed_2[current_info]
     deaths_2    = deaths_second_country[current_info]
 
@@ -413,16 +413,16 @@ def show_deaths_vs_countrys(dates_array, deaths_first_country, deaths_second_cou
     plot.tight_layout()
     plot.show()
 
-def show_active_vs_countrys(dates_array, first_name, second_name):
+def show_active_vs_countrys(dates_array, first_name, second_name, reader):
     # Grafica y muestra una comparación entre los casos a0ctivos entre 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # first_name: Es el nombre del primer país.
     # second_name: Es el nombre del segundo país.
     # Obteniendo los daros de los casos confirmados, recuperados y decesos de ambos países.
-    first_confirmed, first_recovered, first_deaths    = Tools.get_info_by_country_name(first_name)
-    first_confirmed, first_recovered, first_deaths    = Tools.get_clear_vector_info(first_confirmed, first_recovered, first_deaths)
-    second_confirmed, second_recovered, second_deaths = Tools.get_info_by_country_name(second_name)
-    second_confirmed, second_recovered, second_deaths = Tools.get_clear_vector_info(second_confirmed, second_recovered, second_deaths)
+    first_confirmed, first_recovered, first_deaths    = reader.get_info_by_country_name(first_name)
+    first_confirmed, first_recovered, first_deaths    = Tools.get_clear_vector_info(first_confirmed, first_recovered, first_deaths, reader)
+    second_confirmed, second_recovered, second_deaths = reader.get_info_by_country_name(second_name)
+    second_confirmed, second_recovered, second_deaths = Tools.get_clear_vector_info(second_confirmed, second_recovered, second_deaths, reader)
 
     # Casos confirmados
     active_first_country  = get_active_cases(first_confirmed, first_recovered, first_deaths)
@@ -518,7 +518,7 @@ def show_global_state(dates_array, confirmed_cases, recovered_cases, deaths_case
     plot.tight_layout()
     plot.show()
 
-def show_martality_bars(dict_death_rates):
+def show_martality_bars(dict_death_rates, reader):
     # Muestra una grafica de barras con la información porcental de mortalidad de todos los países
     # en orden asendente. 
     # dict_death_rates: es un diccionario con el nombre del pais y su respectivo indice de mortalidad
@@ -526,7 +526,7 @@ def show_martality_bars(dict_death_rates):
 
     death_rates = []
     countrys    = []
-    dates_array = Tools.get_dates_vector()
+    dates_array = Tools.get_dates_vector(reader)
 
     for country, death_rate in dict_death_rates:
         countrys.append(country)
@@ -587,14 +587,14 @@ def zoom_factory(ax, base_scale = 2.):
     #return the function
     return zoom_fun
             
-def show_general_vs_country(dates_array, country_1, country_2):
+def show_general_vs_country(dates_array, country_1, country_2, reader):
     # Grafica e imprime la información del estado general entre 2 países.
     # dates_array: Es un arreglo de fechas de tipo date.
     # country_1: Es el nombre del primer país.
     # country_2: Es el nombre del segundo país.
     # Primer país
-    confirmed_1, recovered_1, deaths_1 = Tools.get_info_by_country_name(country_1)
-    confirmed_1, recovered_1, deaths_1 = Tools.get_clear_vector_info(confirmed_1, recovered_1, deaths_1)
+    confirmed_1, recovered_1, deaths_1 = reader.get_info_by_country_name(country_1)
+    confirmed_1, recovered_1, deaths_1 = Tools.get_clear_vector_info(confirmed_1, recovered_1, deaths_1, reader)
     
     active_1 = get_active_cases(confirmed_1, recovered_1, deaths_1)
     
@@ -623,15 +623,15 @@ def show_general_vs_country(dates_array, country_1, country_2):
     first_confirmed_1 = dates_array[first_info_1]
     
     # Indices Porcentuales.
-    death_rate_1     = Tools.get_country_death_rate(country_1)
+    death_rate_1     = Tools.get_country_death_rate(country_1,reader)
     recovered_rate_1 = (reocvered_cases_1 / confirmed_cases_1)*100
     recovered_rate_1 = round(recovered_rate_1, 2)
     active_rate_1    = (active_cases_1 / confirmed_cases_1)*100
     active_rate_1    = round(active_rate_1, 2)
 
     # Segundo país
-    confirmed_2, recovered_2, deaths_2 = Tools.get_info_by_country_name(country_2)
-    confirmed_2, recovered_2, deaths_2 = Tools.get_clear_vector_info(confirmed_2, recovered_2, deaths_2)
+    confirmed_2, recovered_2, deaths_2 = reader.get_info_by_country_name(country_2)
+    confirmed_2, recovered_2, deaths_2 = Tools.get_clear_vector_info(confirmed_2, recovered_2, deaths_2, reader)
 
     active_2 = get_active_cases(confirmed_2, recovered_2, deaths_2)
 
@@ -659,7 +659,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
     first_confirmed_2 = dates_array[first_info_2]
 
     # Indices procentuales.
-    death_rate_2     = Tools.get_country_death_rate(country_2)
+    death_rate_2     = Tools.get_country_death_rate(country_2, reader)
     recovered_rate_2 = (recovered_cases_2 / confirmed_cases_2)*100
     recovered_rate_2 = round(recovered_rate_2, 2)
     active_rate_2    = (active_cases_2 / confirmed_cases_2)*100
@@ -698,7 +698,7 @@ def show_general_vs_country(dates_array, country_1, country_2):
     plot.tight_layout()
     plot.show()
 
-def show_daily_confirmed_cases(dates_array, daily_confirmed, country_name):
+def show_daily_confirmed_cases(dates_array, daily_confirmed, country_name, reader):
     # Grafica e imprime los casos confirmados diariamente de un pais.
     # dates_array: Es un vector de fechas de tipo date.
     # daily_confirmed: Es un arreglo de enteros con los casos confirmados diariamente.
@@ -709,7 +709,7 @@ def show_daily_confirmed_cases(dates_array, daily_confirmed, country_name):
         dates_array.pop(last_element)
 
     daily_average = Tools.get_average(daily_confirmed)
-    confirmed_cases = Tools.get_confirmed_cases(country_name)
+    confirmed_cases = reader.get_confirmed_cases(country_name)
     confirmed_cases = confirmed_cases[len(confirmed_cases)-1]
     
     print('\n --- --- ' + country_name + ' --- ---' +
