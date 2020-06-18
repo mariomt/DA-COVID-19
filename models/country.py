@@ -3,15 +3,15 @@
 # LocalModules
 from tools.validations import countrys_to_lower
 from tools.reader import Reader
+import config
 
-confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'
 
 def show_all_countries():
     """Return the countries name."""
     def callback(reader, args):
         country_names = []
         for vector in reader:
-            country_names.append( vector[1] )
+            country_names.append( vector[config.COUNTRY_COLUMN] )
 
         country_names.remove('Country/Region')
         country_names.remove('#country+name')
@@ -19,7 +19,7 @@ def show_all_countries():
         return country_names
     
     reader = Reader( )
-    return reader.read_file(confirmed_cases_path, callback)
+    return reader.read_file(config.CONFIRMED_CASES_PATH, callback)
 
 class Country(object):
     """Country model.

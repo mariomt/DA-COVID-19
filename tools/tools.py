@@ -1,13 +1,7 @@
 from datetime import date
 import csv
 import re
-
-
-# Variables globales
-# Rutas de los datasets
-confirmed_cases_path = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'
-
-
+import config
 
 
 def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths, reader):
@@ -16,7 +10,7 @@ def get_clear_vector_info(raw_confirmed, raw_recovered, raw_deaths, reader):
     # raw_confirmed: Es un arreglo de strings con toda la información los casos confirmados.
     # raw_recovered:  Es un arreglo de strings con toda la información los casos recuperados.
     # raw_deaths: Es un arreglo de strings con toda la información los decesos.
-    column_names            = reader.get_first_row(confirmed_cases_path)
+    column_names            = reader.get_first_row(config.CONFIRMED_CASES_PATH)
     fisrt_index, last_index = get_range_dates(column_names)
     confirmed_cases         = []
     recovered_cases         = []
@@ -127,7 +121,7 @@ def get_first_case_index(vector):
 def clear_vector(raw_array, reader):
     # Devuleve un arreglo de enteros con la información correspondiente a las fechas.
     # raw_array: Es un arreglo de string con toda la información de un pais.
-    column_names            = reader.get_first_row(confirmed_cases_path)
+    column_names            = reader.get_first_row(config.CONFIRMED_CASES_PATH)
     first_index, last_index = get_range_dates(column_names)
     clear_vector            = []
 
@@ -146,7 +140,7 @@ def clear_vector(raw_array, reader):
 
 def get_dates_vector(reader):
     # Devuelve un arreglo de fechas en formato date correpondiente a todas las fechas comprendidas en el dataset.
-    column_names            = reader.get_first_row(confirmed_cases_path)
+    column_names            = reader.get_first_row(config.CONFIRMED_CASES_PATH)
     first_index, last_index = get_range_dates(column_names)
     dates_vector            = column_names[ first_index:last_index ]
     dates_vector            = convert_to_date_type(dates_vector)

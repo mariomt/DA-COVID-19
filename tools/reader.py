@@ -5,14 +5,11 @@ readings towards the csv files.
 """
 from os import path
 import csv
+import config
 from tools.tools import clear_vector, get_clear_vector_info
 
 # Documents data
-CONFIRMED_CASES_PATH = 'Raw data\\time_series_covid19_confirmed_global_iso3_regions.csv'
-DEATHS_CASES_PATH    = 'Raw data\\time_series_covid19_deaths_global_iso3_regions.csv'
-RECOVERED_CASES_PATH = 'Raw data\\time_series_covid19_recovered_global_iso3_regions.csv'
 
-COUNTRY_COLUMN = 1
 
 class Reader(object):
     """Reader class.
@@ -26,9 +23,9 @@ class Reader(object):
     def __new__(cls):
         if Reader.__instance is None:
             Reader.file_exists([
-                CONFIRMED_CASES_PATH,
-                DEATHS_CASES_PATH,
-                RECOVERED_CASES_PATH
+                config.CONFIRMED_CASES_PATH,
+                config.DEATHS_CASES_PATH,
+                config.RECOVERED_CASES_PATH
             ])
             Reader.__instance = object.__new__(cls)
         
@@ -49,7 +46,7 @@ class Reader(object):
         def country_rows(reader, country):
             data = []
             for row in reader:
-                if row[COUNTRY_COLUMN] == country[0]:
+                if row[config.COUNTRY_COLUMN] == country[0]:
                     data.append(row)
             
             return data
@@ -66,9 +63,9 @@ class Reader(object):
     # información completa de un pais dado.
     # country: Es el nombre de un pais dado por el usuario (string).
 
-        raw_confirmed_cases = self.get_country_rows(CONFIRMED_CASES_PATH, country)
-        raw_recovered_cases = self.get_country_rows(RECOVERED_CASES_PATH, country)
-        raw_deaths_cases = self.get_country_rows(DEATHS_CASES_PATH, country)
+        raw_confirmed_cases = self.get_country_rows(config.CONFIRMED_CASES_PATH, country)
+        raw_recovered_cases = self.get_country_rows(config.RECOVERED_CASES_PATH, country)
+        raw_deaths_cases = self.get_country_rows(config.DEATHS_CASES_PATH, country)
         return raw_confirmed_cases, raw_recovered_cases, raw_deaths_cases
 
     
@@ -78,13 +75,13 @@ class Reader(object):
             """Return confirmed case."""
             data = []
             for row in reader:
-                if not row[COUNTRY_COLUMN] == 'Country/Region' and not row[COUNTRY_COLUMN] == '#country+name':
+                if not row[config.COUNTRY_COLUMN] == 'Country/Region' and not row[config.COUNTRY_COLUMN] == '#country+name':
                     data.append(row)
             return data
 
-        all_confirmed_cases = self.read_file(CONFIRMED_CASES_PATH, callback)
-        all_recovered_cases = self.read_file(RECOVERED_CASES_PATH, callback)
-        all_deaths_cases    = self.read_file(DEATHS_CASES_PATH, callback)
+        all_confirmed_cases = self.read_file(config.CONFIRMED_CASES_PATH, callback)
+        all_recovered_cases = self.read_file(config.RECOVERED_CASES_PATH, callback)
+        all_deaths_cases    = self.read_file(config.DEATHS_CASES_PATH, callback)
 
         all_confirmed_cases, all_recovered_cases, all_deaths_cases = get_clear_vector_info(all_confirmed_cases, all_recovered_cases, all_deaths_cases, self)
         
@@ -97,11 +94,11 @@ class Reader(object):
         def callback(reader, args):
             data = []
             for row in reader:
-                if row[COUNTRY_COLUMN] == country_name:
+                if row[config.COUNTRY_COLUMN] == country_name:
                     data.append(row)
             return data
 
-        recovered_cases = self.read_file(RECOVERED_CASES_PATH,callback)
+        recovered_cases = self.read_file(config.RECOVERED_CASES_PATH,callback)
 
         recovered_cases = clear_vector(recovered_cases, self)
         return recovered_cases
@@ -112,11 +109,11 @@ class Reader(object):
         def callback(reader, args):
             data = []
             for row in reader:
-                if row[COUNTRY_COLUMN] == country_name:
+                if row[config.COUNTRY_COLUMN] == country_name:
                     data.append(row)
             return data
 
-        confirmed_cases = self.read_file(CONFIRMED_CASES_PATH, callback)
+        confirmed_cases = self.read_file(config.CONFIRMED_CASES_PATH, callback)
         confirmed_cases = clear_vector(confirmed_cases, self)
         return confirmed_cases
                 
@@ -127,11 +124,11 @@ class Reader(object):
         def callback(reader, args):
             data = []
             for row in reader:
-                if row[COUNTRY_COLUMN] == country_name:
+                if row[config.COUNTRY_COLUMN] == country_name:
                     data.append(row)
             return data
 
-        deaths_cases = self.read_file(DEATHS_CASES_PATH, callback)
+        deaths_cases = self.read_file(config.DEATHS_CASES_PATH, callback)
 
         deaths_cases = clear_vector(deaths_cases, self)
         return deaths_cases
