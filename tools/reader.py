@@ -100,7 +100,7 @@ class Reader(object):
 
         recovered_cases = self.read_file(config.RECOVERED_CASES_PATH,callback)
 
-        recovered_cases = clear_vector(recovered_cases, self)
+        recovered_cases = clear_vector(config.RECOVERED_CASES_PATH, self)
         return recovered_cases
 
     def get_confirmed_cases(self, country_name):
@@ -114,7 +114,7 @@ class Reader(object):
             return data
 
         confirmed_cases = self.read_file(config.CONFIRMED_CASES_PATH, callback)
-        confirmed_cases = clear_vector(confirmed_cases, self)
+        confirmed_cases = clear_vector(config.CONFIRMED_CASES_PATH, self)
         return confirmed_cases
                 
 
